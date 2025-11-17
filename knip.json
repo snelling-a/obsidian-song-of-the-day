@@ -1,0 +1,18 @@
+{
+  "$schema": "https://unpkg.com/knip@5/schema.json",
+  "entry": ["src/main.ts", "scripts/**/*.mjs"],
+  "ignore": ["dist/**"],
+  "ignoreDependencies": [
+    "@eslint/js",
+    "@typescript-eslint/eslint-plugin",
+    "@typescript-eslint/parser",
+    "conventional-changelog-conventionalcommits",
+    "obsidian"
+  ],
+  "ignoreExportsUsedInFile": {
+    "interface": true,
+    "type": true
+  },
+  "project": ["src/**/*.ts", "scripts/**/*.mjs"],
+  "tags": ["-lintignore"]
+}
