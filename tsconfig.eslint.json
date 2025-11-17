@@ -1,0 +1,9 @@
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "exclude": [],
+  "extends": "./tsconfig.json",
+  "include": ["eslint.config.ts"]
+}

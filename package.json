@@ -1,0 +1,69 @@
+{
+  "author": {
+    "name": "snelling-a",
+    "url": "https://github.com/snelling-a"
+  },
+  "bugs": {
+    "url": "https://github.com/snelling-a/obsidian-song-of-the-day/issues"
+  },
+  "description": "Create song notes from Spotify links with metadata and album art",
+  "devDependencies": {
+    "@semantic-release/git": "10.0.1",
+    "@types/node": "18.19.130",
+    "@typescript-eslint/eslint-plugin": "8.46.4",
+    "@typescript-eslint/parser": "8.46.4",
+    "builtin-modules": "3.3.0",
+    "conventional-changelog-conventionalcommits": "9.1.0",
+    "dotenv": "17.2.3",
+    "esbuild": "0.17.3",
+    "eslint": "9.39.1",
+    "eslint-config-prettier": "10.1.8",
+    "eslint-plugin-perfectionist": "4.15.1",
+    "globals": "16.5.0",
+    "jiti": "2.6.1",
+    "knip": "5.69.1",
+    "markdownlint-cli2": "0.19.0",
+    "obsidian-typings": "4.63.0",
+    "prettier": "3.6.2",
+    "semantic-release": "24.2.9",
+    "tslib": "2.4.0",
+    "typescript": "5.9.3",
+    "typescript-eslint": "8.46.4"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/snelling-a"
+  },
+  "homepage": "https://github.com/snelling-a/obsidian-song-of-the-day",
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "spotify",
+    "music"
+  ],
+  "license": "Unlicense",
+  "name": "obsidian-song-of-the-day",
+  "private": true,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snelling-a/obsidian-song-of-the-day.git"
+  },
+  "scripts": {
+    "build": "npm run check && node scripts/esbuild.config.mjs production",
+    "check": "npm run typecheck && npm run lint:check && npm run format:check && npm run markdown:check && npm run knip",
+    "dev": "node scripts/esbuild.config.mjs",
+    "fix": "npm run typecheck && npm run lint:fix && npm run format:fix && npm run markdown:fix && npm run knip:fix",
+    "format:check": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "generate:manifest": "node scripts/generate-manifest.mjs",
+    "knip": "knip",
+    "knip:fix": "knip --fix --format",
+    "lint:check": "eslint src/ scripts/",
+    "lint:fix": "eslint src/ scripts/ --fix",
+    "markdown:check": "markdownlint-cli2 \"**/*.md\" \"#node_modules\"",
+    "markdown:fix": "markdownlint-cli2 --fix \"**/*.md\" \"#node_modules\"",
+    "setup-hot-reload": "node scripts/setup-hot-reload.mjs",
+    "typecheck": "tsc -noEmit -skipLibCheck && tsc -p tsconfig.eslint.json -noEmit"
+  },
+  "version": "0.0.0"
+}
