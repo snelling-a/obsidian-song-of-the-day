@@ -1,10 +1,10 @@
 import { moment, normalizePath, Notice, TFile, TFolder } from "obsidian";
+import { Track } from "src/types/spotify";
 
 import type SongOfTheDayPlugin from "../main";
 
 import { TEMPLATE_VARIABLES } from "../constants/template-variables";
 import { SpotifyService } from "../services/spotify";
-import { SpotifyTrack } from "../types";
 import { SpotifyInputModal } from "../ui/modal";
 import { formatFileName } from "../utils/format";
 
@@ -88,10 +88,7 @@ async function createSongNote(
  * Generates the note body using the template and track data.
  * Replaces all template variables with their corresponding values.
  */
-function generateNoteBody(
-  track: SpotifyTrack,
-  plugin: SongOfTheDayPlugin,
-): string {
+function generateNoteBody(track: Track, plugin: SongOfTheDayPlugin): string {
   let body = plugin.settings.noteTemplate;
 
   for (const variable of TEMPLATE_VARIABLES) {
@@ -109,7 +106,7 @@ function generateNoteBody(
 async function setFrontmatter(
   plugin: SongOfTheDayPlugin,
   file: TFile,
-  track: SpotifyTrack,
+  track: Track,
 ): Promise<void> {
   const artists = track.artists.map((a) => a.name);
   const coverImage = track.album.images[0]?.url || "";

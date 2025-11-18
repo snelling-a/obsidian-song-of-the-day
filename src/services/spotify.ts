@@ -1,4 +1,4 @@
-import { SpotifyTrack } from "../types";
+import { Track } from "src/types/spotify";
 
 export class SpotifyService {
   private accessToken: null | string = null;
@@ -50,7 +50,7 @@ export class SpotifyService {
    * @returns Track data including metadata, album info, and artist details
    * @throws Error if track not found or API request fails
    */
-  async getTrack(trackId: string): Promise<SpotifyTrack> {
+  async getTrack(trackId: string): Promise<Track> {
     const token = await this.getAccessToken();
 
     try {
