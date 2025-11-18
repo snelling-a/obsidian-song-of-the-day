@@ -6,7 +6,7 @@
   "bugs": {
     "url": "https://github.com/snelling-a/obsidian-song-of-the-day/issues"
   },
-  "description": "Create song notes from Spotify links with metadata and album art",
+  "description": "Create song notes from Spotify links with metadata and album art.",
   "devDependencies": {
     "@semantic-release/git": "10.0.1",
     "@types/node": "18.19.130",

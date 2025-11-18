@@ -6,30 +6,41 @@ const MIN_APP_VERSION = "10.0.0";
 const IS_DESKTOP_ONLY = false;
 
 /**
- * Converts kebab-case package name to Title Case display name
- * @param {string} name - Package name (e.g., "obsidian-song-of-the-day")
- * @returns Display name (e.g., "Song of the Day")
+ * Converts package name to plugin app ID and display name.
+ * Strips 'obsidian-' prefix and transforms kebab-case to Title Case.
+ *
+ * @returns Object containing the plugin pluginId and displayName
  */
-function toDisplayName(name) {
-  return name
-    .replace(/^obsidian-/, "")
+function toDisplayName() {
+  const pluginId = packageName.replace(/^obsidian-/, "");
+  const displayName = pluginId
     .split("-")
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
+
+  return { displayName, pluginId };
 }
+
+const { displayName, pluginId } = toDisplayName();
 
 export const manifest = {
   author: author.name,
   authorUrl: author?.url,
   description,
   fundingUrl: funding?.url,
-  id: packageName,
+  id: pluginId,
   isDesktopOnly: IS_DESKTOP_ONLY,
   minAppVersion: MIN_APP_VERSION,
-  name: toDisplayName(packageName),
+  name: displayName,
   version,
 };
 
+/**
+ * Generates the manifest.json content as a formatted JSON string.
+ * Uses tab indentation for Obsidian plugin manifest format.
+ *
+ * @returns Formatted JSON string of the manifest object
+ */
 export function generateManifest() {
   return JSON.stringify(manifest, null, "\t");
 }
