@@ -65,5 +65,5 @@
     "setup-hot-reload": "node scripts/setup-hot-reload.mjs",
     "typecheck": "tsc -noEmit -skipLibCheck && tsc -p tsconfig.eslint.json -noEmit"
   },
-  "version": "1.0.2"
+  "version": "1.0.3"
 }
