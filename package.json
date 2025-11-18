@@ -15,7 +15,7 @@
     "builtin-modules": "3.3.0",
     "conventional-changelog-conventionalcommits": "9.1.0",
     "dotenv": "17.2.3",
-    "esbuild": "0.17.3",
+    "esbuild": "0.25.0",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-perfectionist": "4.15.1",
