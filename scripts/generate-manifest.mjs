@@ -8,14 +8,38 @@ const IS_DESKTOP_ONLY = false;
 /**
  * Converts package name to plugin app ID and display name.
  * Strips 'obsidian-' prefix and transforms kebab-case to Title Case.
+ * Small words (articles, prepositions) are lowercase unless first or last.
  *
  * @returns Object containing the plugin pluginId and displayName
  */
 function toDisplayName() {
   const pluginId = packageName.replace(/^obsidian-/, "");
-  const displayName = pluginId
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+  const words = pluginId.split("-");
+  const smallWords = new Set([
+    "a",
+    "an",
+    "and",
+    "at",
+    "but",
+    "for",
+    "in",
+    "of",
+    "on",
+    "or",
+    "the",
+    "to",
+    "with",
+  ]);
+
+  const displayName = words
+    .map((word, index) => {
+      const isFirstOrLast = index === 0 || index === words.length - 1;
+      const shouldCapitalize = isFirstOrLast || !smallWords.has(word);
+
+      return shouldCapitalize
+        ? word.charAt(0).toUpperCase() + word.slice(1)
+        : word;
+    })
     .join(" ");
 
   return { displayName, pluginId };

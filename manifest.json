@@ -6,6 +6,6 @@
 	"id": "song-of-the-day",
 	"isDesktopOnly": false,
 	"minAppVersion": "10.0.0",
-	"name": "Song Of The Day",
-	"version": "0.0.0"
+	"name": "Song of the Day",
+	"version": "1.0.0"
 }
