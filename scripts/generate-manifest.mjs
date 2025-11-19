@@ -9,7 +9,6 @@ const IS_DESKTOP_ONLY = false;
  * Converts package name to plugin app ID and display name.
  * Strips 'obsidian-' prefix and transforms kebab-case to Title Case.
  * Small words (articles, prepositions) are lowercase unless first or last.
- *
  * @returns Object containing the plugin pluginId and displayName
  */
 function toDisplayName() {
@@ -62,7 +61,6 @@ export const manifest = {
 /**
  * Generates the manifest.json content as a formatted JSON string.
  * Uses tab indentation for Obsidian plugin manifest format.
- *
  * @returns Formatted JSON string of the manifest object
  */
 export function generateManifest() {

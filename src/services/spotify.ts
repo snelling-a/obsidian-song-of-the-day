@@ -1,5 +1,8 @@
-import { Track } from "src/types/spotify";
+import { AccessToken, Track } from "src/types/spotify";
 
+/**
+ * Service for interacting with the Spotify Web API
+ */
 export class SpotifyService {
   private accessToken: null | string = null;
   private clientId: string;
@@ -25,13 +28,15 @@ export class SpotifyService {
     input = input.trim();
 
     // Handle Spotify URI: spotify:track:6rqhFgbbKwnb9MLmUQDhG6
-    const uriMatch = input.match(/spotify:track:([a-zA-Z0-9]+)/);
+    const uriMatch = /spotify:track:([a-zA-Z0-9]+)/.exec(input);
+
     if (uriMatch) {
       return uriMatch[1];
     }
 
     // Handle Spotify URL: https://open.spotify.com/track/6rqhFgbbKwnb9MLmUQDhG6
-    const urlMatch = input.match(/spotify\.com\/track\/([a-zA-Z0-9]+)/);
+    const urlMatch = /spotify\.com\/track\/([a-zA-Z0-9]+)/.exec(input);
+
     if (urlMatch) {
       return urlMatch[1];
     }
@@ -48,7 +53,7 @@ export class SpotifyService {
    * Fetches track data from Spotify API
    * @param trackId - Spotify track ID
    * @returns Track data including metadata, album info, and artist details
-   * @throws Error if track not found or API request fails
+   * @throws {Error} If track not found or API request fails
    */
   async getTrack(trackId: string): Promise<Track> {
     const token = await this.getAccessToken();
@@ -58,19 +63,26 @@ export class SpotifyService {
         `https://api.spotify.com/v1/tracks/${trackId}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
+
       if (!response.ok) {
         if (response.status === 404) {
           throw new Error("Track not found");
         }
+
         if (response.status === 429) {
           const retryAfter = response.headers.get("Retry-After");
-          throw new Error(`Rate limited. Try again in ${retryAfter} seconds`);
+
+          throw new Error(
+            `Rate limited. Try again in ${retryAfter ?? "unknown"} seconds`,
+          );
         }
-        throw new Error(`Failed to fetch track: ${response.status}`);
+        throw new Error(`Failed to fetch track: ${String(response.status)}`);
       }
-      return await response.json();
+
+      return (await response.json()) as Track;
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
+
       throw new Error(`Failed to fetch track data: ${message}`);
     }
   }
@@ -78,7 +90,7 @@ export class SpotifyService {
   /**
    * Gets a valid Spotify API access token, requesting a new one if needed
    * @returns Valid access token
-   * @throws Error if authentication fails
+   * @throws {Error} If authentication fails
    */
   private async getAccessToken(): Promise<string> {
     if (this.accessToken && Date.now() < this.tokenExpiry) {
@@ -101,16 +113,21 @@ export class SpotifyService {
 
       if (!response.ok) {
         const error = await response.text();
-        throw new Error(`Authentication failed: ${response.status} - ${error}`);
+
+        throw new Error(
+          `Authentication failed: ${String(response.status)} - ${error}`,
+        );
       }
 
-      const data = await response.json();
+      const data = (await response.json()) as AccessToken;
+
       this.accessToken = data.access_token;
       this.tokenExpiry = Date.now() + data.expires_in * 1000 - 60000; // Refresh 1 min early
 
       return data.access_token;
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
+
       throw new Error(`Failed to authenticate with Spotify: ${message}`);
     }
   }

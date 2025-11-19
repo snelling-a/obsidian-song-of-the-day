@@ -56,6 +56,7 @@ export class TemplateSuggest extends AbstractInputSuggest<TemplateVariable> {
     this.textareaEl.value = textBefore + replacement + textAfter;
 
     const newCursorPos = this.triggerStart + replacement.length;
+
     this.textareaEl.setSelectionRange(newCursorPos, newCursorPos);
     this.textareaEl.dispatchEvent(new Event("input", { bubbles: true }));
 
@@ -74,6 +75,7 @@ export class TemplateSuggest extends AbstractInputSuggest<TemplateVariable> {
 
     if (lastDoubleBrace === -1) {
       this.triggerStart = -1;
+
       return [];
     }
 

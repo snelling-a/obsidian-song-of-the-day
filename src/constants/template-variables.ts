@@ -50,7 +50,7 @@ export const TEMPLATE_VARIABLES: TemplateVariable[] = [
   },
   {
     description: "Spotify track URL",
-    getValue: (track) => track.external_urls?.spotify ?? "",
+    getValue: (track) => track.external_urls.spotify,
     name: "spotify_url",
   },
 ];
@@ -62,17 +62,19 @@ export const TEMPLATE_VARIABLES: TemplateVariable[] = [
  */
 export function createTemplateVariablesFragment(el: DocumentFragment): void {
   el.appendText("Template for note body. Available variables:");
-
   const variablesContainer = el.createDiv();
+
   variablesContainer.style.marginTop = "0.5em";
 
   for (const variable of TEMPLATE_VARIABLES) {
     const row = variablesContainer.createDiv();
+
     row.style.alignItems = "baseline";
     row.style.display = "flex";
     row.style.gap = "0.5em";
 
     const code = row.createEl("code", { text: `{{${variable.name}}}` });
+
     code.style.display = "inline-block";
     code.style.minWidth = "130px";
 

@@ -11,6 +11,14 @@
  * Only the types necessary for track and album data have been included.
  */
 
+export interface AccessToken {
+  access_token: string;
+  expires?: number;
+  expires_in: number;
+  refresh_token: string;
+  token_type: string;
+}
+
 export interface Copyright {
   text: string;
   type: string;
@@ -56,7 +64,6 @@ export interface Track extends SimplifiedTrack {
   external_ids: ExternalIds;
   popularity: number;
 }
-
 interface AlbumBase {
   album_type: string;
   available_markets: string[];
@@ -77,6 +84,7 @@ interface AlbumBase {
   type: string;
   uri: string;
 }
+
 interface SimplifiedAlbum extends AlbumBase {
   album_group: string;
   artists: SimplifiedArtist[];

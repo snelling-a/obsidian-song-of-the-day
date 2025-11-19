@@ -7,7 +7,7 @@ import { NOTE_NAME_FORMAT, NoteNameFormat } from "../constants/settings";
  * @returns The formatted filename
  */
 export function formatFileName(title: string, format: NoteNameFormat): string {
-  let formattedFileName = title.trim() ?? "Untitled";
+  let formattedFileName = title.trim();
 
   switch (format) {
     case NOTE_NAME_FORMAT.KEBAB_CASE:

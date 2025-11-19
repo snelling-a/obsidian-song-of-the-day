@@ -25,6 +25,7 @@ let outputToVault = false;
 
 if (devVaultPath && !prod) {
   const pluginDir = join(devVaultPath, ".obsidian", "plugins", pkg.name);
+
   outdir = pluginDir;
   outputToVault = true;
 
@@ -67,28 +68,25 @@ const context = await esbuild.context({
   treeShaking: true,
 });
 
-// Helper function to write build artifacts
 function writeArtifacts(dir) {
-  // Generate and write manifest.json
   const manifestPath = join(dir, "manifest.json");
+
   writeFileSync(manifestPath, generateManifest());
   console.log(`✓ Generated ${manifestPath}`);
-
-  // Copy styles.css if it exists
   const stylesSrc = "styles.css";
+
   if (existsSync(stylesSrc)) {
     const stylesDest = join(dir, "styles.css");
+
     copyFileSync(stylesSrc, stylesDest);
     console.log(`✓ Copied ${stylesSrc} to ${stylesDest}`);
   }
 }
 
-// Copy manifest.json and styles.css to output directory for dev vault
 if (outputToVault) {
   writeArtifacts(outdir);
-
-  // Create .hotreload marker file for hot-reload plugin
   const hotreloadMarker = join(outdir, ".hotreload");
+
   if (!existsSync(hotreloadMarker)) {
     writeFileSync(hotreloadMarker, "");
     console.log(`✓ Created .hotreload marker file`);
@@ -97,12 +95,11 @@ if (outputToVault) {
 
 if (prod) {
   await context.rebuild();
-  // Write artifacts to production output directory
   writeArtifacts(outdir);
   process.exit(0);
 } else {
   await context.watch();
-  // Write artifacts for dev builds too
+
   if (!outputToVault) {
     writeArtifacts(outdir);
   }

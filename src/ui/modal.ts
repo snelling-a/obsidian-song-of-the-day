@@ -2,9 +2,13 @@ import { App, displayTooltip, Modal, Setting } from "obsidian";
 
 import { CSS_CLASSES } from "../constants/css";
 
+/**
+ * Modal dialog for inputting Spotify track links.
+ * Accepts URLs, URIs, or raw track IDs and validates input before submission.
+ */
 export class SpotifyInputModal extends Modal {
   private inputEl: HTMLInputElement | null = null;
-  private onSubmit: (result: string) => void;
+  private onSubmit: (result: string) => Promise<void> | void;
   private result = "";
 
   /**
@@ -12,21 +16,22 @@ export class SpotifyInputModal extends Modal {
    * @param app - Obsidian app instance
    * @param onSubmit - Callback to execute when user submits input
    */
-  constructor(app: App, onSubmit: (result: string) => void) {
+  constructor(app: App, onSubmit: (result: string) => Promise<void> | void) {
     super(app);
     this.onSubmit = onSubmit;
   }
 
   /**
-   * Cleans up modal content when closed
+   * @inheritDoc
    */
   onClose() {
     const { contentEl } = this;
+
     contentEl.empty();
   }
 
   /**
-   * Renders the modal UI with input field and buttons
+   * @inheritDoc
    */
   onOpen() {
     const { contentEl } = this;
@@ -46,10 +51,12 @@ export class SpotifyInputModal extends Modal {
         text.inputEl.addEventListener("keydown", (e: KeyboardEvent) => {
           if (e.key === "Enter") {
             e.preventDefault();
-            this.submit();
+            void this.submit();
           }
         });
-        setTimeout(() => text.inputEl.focus(), 10);
+        setTimeout(() => {
+          text.inputEl.focus();
+        }, 10);
       });
 
     new Setting(contentEl)
@@ -58,7 +65,7 @@ export class SpotifyInputModal extends Modal {
           .setButtonText("Create")
           .setCta()
           .onClick(() => {
-            this.submit();
+            void this.submit();
           }),
       )
       .addButton((btn) =>
@@ -89,15 +96,17 @@ export class SpotifyInputModal extends Modal {
   private async submit() {
     if (!this.result.trim()) {
       this.showError("Please enter a Spotify link or track ID");
+
       return;
     }
 
     try {
-      this.onSubmit(this.result.trim());
+      await this.onSubmit(this.result.trim());
       this.close();
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "An error occurred";
+
       this.showError(message);
       console.error("Error in onSubmit:", error);
     }

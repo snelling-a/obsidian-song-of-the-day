@@ -11,9 +11,11 @@ const HOT_RELOAD_MANIFEST_URL =
 
 async function downloadFile(url) {
   const response = await fetch(url);
+
   if (!response.ok) {
     throw new Error(`Failed to download ${url}: ${response.status}`);
   }
+
   return await response.text();
 }
 
@@ -34,7 +36,6 @@ async function setupHotReload() {
 
   const hotReloadDir = join(vaultPath, ".obsidian", "plugins", "hot-reload");
 
-  // Create hot-reload directory
   if (!existsSync(hotReloadDir)) {
     mkdirSync(hotReloadDir, { recursive: true });
     console.log(`✓ Created directory: ${hotReloadDir}`);
@@ -43,15 +44,15 @@ async function setupHotReload() {
   }
 
   try {
-    // Download main.js
     console.log("Downloading hot-reload main.js...");
     const mainJs = await downloadFile(HOT_RELOAD_URL);
+
     writeFileSync(join(hotReloadDir, "main.js"), mainJs);
     console.log("✓ Downloaded main.js");
 
-    // Download manifest.json
     console.log("Downloading hot-reload manifest.json...");
     const manifest = await downloadFile(HOT_RELOAD_MANIFEST_URL);
+
     writeFileSync(join(hotReloadDir, "manifest.json"), manifest);
     console.log("✓ Downloaded manifest.json");
 

@@ -8,10 +8,15 @@ import { SpotifyService } from "../services/spotify";
 import { SpotifyInputModal } from "../ui/modal";
 import { formatFileName } from "../utils/format";
 
+/**
+ * Registers the "Create Song of the Day Note" command with the plugin
+ * @param plugin - The main plugin instance
+ */
 export function registerCreateSongNoteCommand(plugin: SongOfTheDayPlugin) {
   plugin.addCommand({
     callback: () => {
       const service = plugin.getSpotifyService();
+
       if (!service) {
         return;
       }
@@ -27,6 +32,9 @@ export function registerCreateSongNoteCommand(plugin: SongOfTheDayPlugin) {
 
 /**
  * Creates a song note from a Spotify track link or ID
+ * @param plugin - The main plugin instance
+ * @param service - The Spotify service instance for API calls
+ * @param input - Spotify track URL, URI, or track ID
  */
 async function createSongNote(
   plugin: SongOfTheDayPlugin,
@@ -38,10 +46,12 @@ async function createSongNote(
 
     try {
       const trackId = service.extractTrackId(input);
+
       if (!trackId) {
         new Notice(
           "Invalid Spotify link or ID. Please provide a valid Spotify track URL, URI, or ID.",
         );
+
         return;
       }
 
@@ -53,14 +63,18 @@ async function createSongNote(
       const filePath = normalizePath(`${folderPath}/${fileName}`);
 
       const existingFile = plugin.app.vault.getAbstractFileByPath(filePath);
+
       if (existingFile instanceof TFile) {
         new Notice(`Note already exists: ${fileName}`);
         const leaf = plugin.app.workspace.getLeaf();
+
         await leaf.openFile(existingFile);
+
         return;
       }
 
       const folder = plugin.app.vault.getAbstractFileByPath(folderPath);
+
       if (!folder || !(folder instanceof TFolder)) {
         await plugin.app.vault.createFolder(folderPath);
       }
@@ -71,6 +85,7 @@ async function createSongNote(
       await setFrontmatter(plugin, file, track);
 
       const leaf = plugin.app.workspace.getLeaf();
+
       await leaf.openFile(file);
 
       new Notice(`Created song note: ${track.name}`);
@@ -79,6 +94,7 @@ async function createSongNote(
     }
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
+
     new Notice(`Error: ${message}`);
     console.error("Song of the Day error:", error);
   }
@@ -87,6 +103,9 @@ async function createSongNote(
 /**
  * Generates the note body using the template and track data.
  * Replaces all template variables with their corresponding values.
+ * @param track - The Spotify track data
+ * @param plugin - The main plugin instance containing settings
+ * @returns The rendered note content with all template variables replaced
  */
 function generateNoteBody(track: Track, plugin: SongOfTheDayPlugin): string {
   let body = plugin.settings.noteTemplate;
@@ -94,6 +113,7 @@ function generateNoteBody(track: Track, plugin: SongOfTheDayPlugin): string {
   for (const variable of TEMPLATE_VARIABLES) {
     const pattern = new RegExp(`\\{\\{${variable.name}\\}\\}`, "g");
     const value = variable.getValue(track, plugin);
+
     body = body.replace(pattern, value);
   }
 
@@ -102,6 +122,9 @@ function generateNoteBody(track: Track, plugin: SongOfTheDayPlugin): string {
 
 /**
  * Sets the frontmatter metadata for the song note
+ * @param plugin - The main plugin instance containing settings
+ * @param file - The created note file to add metadata to
+ * @param track - The Spotify track data to extract metadata from
  */
 async function setFrontmatter(
   plugin: SongOfTheDayPlugin,
@@ -112,15 +135,18 @@ async function setFrontmatter(
   const coverImage = track.album.images[0]?.url || "";
   const createdDate = moment().format(plugin.settings.dateFormat);
 
-  await plugin.app.fileManager.processFrontMatter(file, (frontmatter) => {
-    frontmatter.title = track.name;
-    frontmatter.artist = artists;
-    frontmatter.album = track.album.name;
-    frontmatter.release_date = track.album.release_date;
-    frontmatter.date = createdDate;
-    frontmatter.cover = coverImage;
-    frontmatter.spotify_url = track.external_urls?.spotify ?? "";
-    frontmatter.spotify_id = track.id;
-    frontmatter.duration_ms = track.duration_ms;
-  });
+  await plugin.app.fileManager.processFrontMatter(
+    file,
+    (frontmatter: Record<string, unknown>) => {
+      frontmatter.title = track.name;
+      frontmatter.artist = artists;
+      frontmatter.album = track.album.name;
+      frontmatter.release_date = track.album.release_date;
+      frontmatter.date = createdDate;
+      frontmatter.cover = coverImage;
+      frontmatter.spotify_url = track.external_urls.spotify;
+      frontmatter.spotify_id = track.id;
+      frontmatter.duration_ms = track.duration_ms;
+    },
+  );
 }

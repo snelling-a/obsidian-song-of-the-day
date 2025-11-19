@@ -14,6 +14,10 @@ import { FolderSuggest } from "./ui/folder-suggest";
 import { TemplateSuggest } from "./ui/template-suggest";
 import { getNoteNameFormatLabel } from "./utils/format";
 
+/**
+ * Settings tab for configuring the Song of the Day plugin.
+ * Provides UI for Spotify API credentials, note output settings, and template customization.
+ */
 export class SongOfTheDaySettingTab extends PluginSettingTab {
   readonly plugin: SongOfTheDayPlugin;
   private credentialsHelpEl: HTMLElement | null = null;
@@ -28,6 +32,9 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
     this.plugin = plugin;
   }
 
+  /**
+   * @inheritDoc
+   */
   display(): void {
     this.containerEl.empty();
 
@@ -121,9 +128,11 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
     message: string,
   ): HTMLElement {
     const errorEl = parent.createDiv();
+
     errorEl.style.color = CSS_VARIABLES.TEXT_ERROR;
     errorEl.style.fontSize = CSS_VARIABLES.FONT_UI_SMALLER;
     errorEl.setText(message);
+
     return errorEl;
   }
 
@@ -216,12 +225,12 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
 
           if (trimmedValue.length === 0) {
             this.markInputInvalid(text.inputEl);
-            if (!errorEl) {
-              errorEl = this.createErrorElement(
-                setting.infoEl,
-                "Client ID is required to use this plugin",
-              );
-            }
+
+            errorEl ??= this.createErrorElement(
+              setting.infoEl,
+              "Client ID is required to use this plugin",
+            );
+
             return;
           }
 
@@ -272,12 +281,12 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
 
           if (trimmedValue.length === 0) {
             this.markInputInvalid(text.inputEl);
-            if (!errorEl) {
-              errorEl = this.createErrorElement(
-                setting.infoEl,
-                "Client Secret is required to use this plugin",
-              );
-            }
+
+            errorEl ??= this.createErrorElement(
+              setting.infoEl,
+              "Client Secret is required to use this plugin",
+            );
+
             return;
           }
 

@@ -8,6 +8,10 @@ import { getOrCreateSpotifyService } from "./services/spotify-manager";
 import { SongOfTheDaySettingTab } from "./settings";
 import { SongOfTheDaySettings } from "./types/settings";
 
+/**
+ * Main plugin class for Song of the Day.
+ * Creates song notes from Spotify track links with metadata and album art.
+ */
 export default class SongOfTheDayPlugin extends Plugin {
   settings!: SongOfTheDaySettings;
   private settingTab: null | SongOfTheDaySettingTab = null;
@@ -23,6 +27,7 @@ export default class SongOfTheDayPlugin extends Plugin {
       this.app,
       this.spotifyService,
     );
+
     return this.spotifyService;
   }
 
@@ -30,9 +35,16 @@ export default class SongOfTheDayPlugin extends Plugin {
    * Loads plugin settings from disk and merges with defaults
    */
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+    this.settings = Object.assign(
+      {},
+      DEFAULT_SETTINGS,
+      (await this.loadData()) as Partial<SongOfTheDaySettings>,
+    );
   }
 
+  /**
+   * @inheritDoc
+   */
   async onload() {
     await this.loadSettings();
 
@@ -42,7 +54,12 @@ export default class SongOfTheDayPlugin extends Plugin {
     this.addSettingTab(this.settingTab);
   }
 
-  onunload() {}
+  /**
+   * @inheritDoc
+   */
+  onunload() {
+    // No cleanup needed - all resources are managed by Obsidian
+  }
 
   /**
    * Saves plugin settings to disk and resets the Spotify service to pick up credential changes

@@ -32,13 +32,14 @@ export function getOrCreateSpotifyService(
     new Notice("Please configure Spotify API credentials in settings");
     app.setting.open();
     app.setting.openTabById(pkg.name);
+
     return null;
   }
 
   if (
     currentService &&
     storedCredentials?.clientId === settings.spotifyClientId &&
-    storedCredentials?.clientSecret === settings.spotifyClientSecret
+    storedCredentials.clientSecret === settings.spotifyClientSecret
   ) {
     return currentService;
   }
