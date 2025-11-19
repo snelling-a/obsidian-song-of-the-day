@@ -1,5 +1,7 @@
 import { NOTE_NAME_FORMAT, NoteNameFormat } from "../constants/settings";
 
+export const exampleTitle = "I Would Die 4 U";
+
 /**
  * Formats the file name based on the selected format.
  * @param title - The original title to format
@@ -36,7 +38,6 @@ export function formatFileName(title: string, format: NoteNameFormat): string {
  * @returns A descriptive label for the format
  */
 export function getNoteNameFormatLabel(format: NoteNameFormat): string {
-  const exampleTitle = "I Would Die 4 U";
   const formattedExample = formatFileName(exampleTitle, format);
 
   switch (format) {

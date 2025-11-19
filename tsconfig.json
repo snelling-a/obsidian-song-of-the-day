@@ -4,6 +4,10 @@
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "erasableSyntaxOnly": true,
+    "paths": {
+      "src/*": ["src/*"],
+      "test/*": ["test/*"]
+    },
     "importHelpers": true,
     "inlineSourceMap": true,
     "inlineSources": true,
@@ -20,7 +24,7 @@
     "resolveJsonModule": true,
     "strict": true,
     "target": "ES6",
-    "types": ["obsidian-typings"]
+    "types": ["obsidian-typings", "vitest/globals"]
   },
   "exclude": ["eslint.config.ts"],
   "include": ["**/*.ts"]

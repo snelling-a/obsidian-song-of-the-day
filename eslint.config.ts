@@ -3,6 +3,7 @@ import stylistic from "@stylistic/eslint-plugin";
 import prettierConfig from "eslint-config-prettier";
 import jsdoc from "eslint-plugin-jsdoc";
 import perfectionist from "eslint-plugin-perfectionist";
+import vitest from "eslint-plugin-vitest";
 import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -106,5 +107,37 @@ export default defineConfig([
       "no-unused-vars": ["error", { args: "none" }],
     },
   },
-  { ignores: ["main.js", "node_modules/**"] },
+
+  // Test file specific configuration
+  {
+    files: ["**/*.{test,spec}.ts"],
+    languageOptions: {
+      globals: {
+        ...vitest.environments.env.globals,
+      },
+    },
+    plugins: { vitest },
+    rules: {
+      ...vitest.configs.all.rules,
+      "@typescript-eslint/unbound-method": "off",
+      "vitest/no-hooks": "off",
+      "vitest/prefer-called-times": "off",
+      "vitest/prefer-expect-assertions": [
+        "error",
+        { onlyFunctionsWithAsyncKeyword: true },
+      ],
+      "vitest/valid-title": [
+        "error",
+        {
+          ignoreTypeOfDescribeName: true,
+          mustMatch: { it: ["^should\\s.*$"] },
+        },
+      ],
+    },
+  },
+
+  // Files and directories to exclude from linting
+  {
+    ignores: ["main.js", "node_modules/**"],
+  },
 ]);

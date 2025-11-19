@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@5/schema.json",
-  "entry": ["src/main.ts", "scripts/**/*.mjs"],
+  "entry": ["src/main.ts", "scripts/**/*.mjs", "vitest.config.ts"],
   "ignore": ["dist/**"],
   "ignoreDependencies": [
     "@eslint/js",
@@ -13,6 +13,10 @@
     "interface": true,
     "type": true
   },
-  "project": ["src/**/*.ts", "scripts/**/*.mjs"],
-  "tags": ["-lintignore"]
+  "project": ["src/**/*.ts", "scripts/**/*.mjs", "test/**/*.ts"],
+  "tags": ["-lintignore"],
+  "vitest": {
+    "config": ["vitest.config.ts"],
+    "entry": ["src/**/*.{test,spec}.ts", "test/**/*.ts"]
+  }
 }

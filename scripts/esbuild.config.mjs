@@ -56,6 +56,7 @@ const context = await esbuild.context({
     "@lezer/highlight",
     "@lezer/lr",
     "electron",
+    "moment",
     "obsidian",
     ...builtins,
   ],

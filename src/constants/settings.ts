@@ -1,4 +1,4 @@
-import { moment } from "obsidian";
+import moment from "moment";
 import { SongOfTheDaySettings } from "src/types/settings";
 
 export const NOTE_NAME_FORMAT = {
