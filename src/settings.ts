@@ -56,7 +56,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    */
   private clearInputInvalid(inputEl: HTMLInputElement): void {
     inputEl.removeClass(CSS_CLASSES.INVALID);
-    inputEl.style.removeProperty("border-color");
+    inputEl.setCssProps({ "border-color": "" });
   }
 
   /**
@@ -129,8 +129,10 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   ): HTMLElement {
     const errorEl = parent.createDiv();
 
-    errorEl.style.color = CSS_VARIABLES.TEXT_ERROR;
-    errorEl.style.fontSize = CSS_VARIABLES.FONT_UI_SMALLER;
+    errorEl.setCssProps({
+      color: CSS_VARIABLES.TEXT_ERROR,
+      "font-size": CSS_VARIABLES.FONT_UI_SMALLER,
+    });
     errorEl.setText(message);
 
     return errorEl;
@@ -322,6 +324,6 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    */
   private markInputInvalid(inputEl: HTMLInputElement): void {
     inputEl.addClass(CSS_CLASSES.INVALID);
-    inputEl.style.borderColor = CSS_VARIABLES.TEXT_ERROR;
+    inputEl.setCssProps({ "border-color": CSS_VARIABLES.TEXT_ERROR });
   }
 }

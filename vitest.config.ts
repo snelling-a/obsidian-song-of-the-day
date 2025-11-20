@@ -31,5 +31,6 @@ export default defineConfig({
     mockReset: true,
     reporters: ["tree"],
     restoreMocks: true,
+    setupFiles: ["./test/setup.ts"],
   },
 });

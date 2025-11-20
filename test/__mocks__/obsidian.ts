@@ -10,7 +10,10 @@ import { vi } from "vitest";
 
 export const Notice = vi.fn(function (this: { hide: () => void }) {
   this.hide = vi.fn();
-}) as unknown as new (message: string, duration?: number) => {
+}) as unknown as new (
+  message: string,
+  duration?: number,
+) => {
   hide: () => void;
 };
 
@@ -95,3 +98,13 @@ export const displayTooltip = vi.fn();
 export const moment = vi.fn();
 
 export const normalizePath = (path: string) => path;
+
+export interface RequestUrlResponse {
+  arrayBuffer: ArrayBuffer;
+  headers: Record<string, string>;
+  json: unknown;
+  status: number;
+  text: string;
+}
+
+export const requestUrl = vi.fn();

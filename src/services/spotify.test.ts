@@ -1,3 +1,4 @@
+import { requestUrl } from "obsidian";
 import {
   SPOTIFY_CLIENT_ID,
   SPOTIFY_CLIENT_SECRET,
@@ -11,11 +12,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { SPOTIFY_BASE_URL, SpotifyService } from "./spotify";
 
-const mockAuthFetch = () =>
-  vi.spyOn(global, "fetch").mockResolvedValueOnce({
-    json: () => Promise.resolve(mockAuthResponse),
-    ok: true,
-  } as Response);
+const mockAuthRequest = () =>
+  vi.mocked(requestUrl).mockResolvedValueOnce({
+    arrayBuffer: new ArrayBuffer(0),
+    headers: {},
+    json: mockAuthResponse,
+    status: 200,
+    text: "",
+  });
 
 describe(SpotifyService, () => {
   let service: SpotifyService;
@@ -52,17 +56,19 @@ describe(SpotifyService, () => {
   describe(SpotifyService.prototype.getTrack, () => {
     it("should fetch track data successfully", async () => {
       expect.hasAssertions();
-      mockAuthFetch().mockResolvedValueOnce({
-        json: () => Promise.resolve(mockTrackResponse),
-        ok: true,
-      } as Response);
+      mockAuthRequest().mockResolvedValueOnce({
+        arrayBuffer: new ArrayBuffer(0),
+        headers: {},
+        json: mockTrackResponse,
+        status: 200,
+        text: "",
+      });
 
       const track = await service.getTrack("789");
 
       expect(track).toStrictEqual(mockTrackResponse);
-      expect(fetch).toHaveBeenNthCalledWith(
+      expect(requestUrl).toHaveBeenNthCalledWith(
         1,
-        "https://accounts.spotify.com/api/token",
         expect.objectContaining({
           body: "grant_type=client_credentials",
           headers: expect.objectContaining({
@@ -70,47 +76,53 @@ describe(SpotifyService, () => {
             "Content-Type": "application/x-www-form-urlencoded",
           }) as Record<string, string>,
           method: "POST",
+          url: "https://accounts.spotify.com/api/token",
         }),
       );
-      expect(fetch).toHaveBeenNthCalledWith(
+      expect(requestUrl).toHaveBeenNthCalledWith(
         2,
-        `${SPOTIFY_BASE_URL}/tracks/789`,
         expect.objectContaining({
           headers: { Authorization: "Bearer mock-token" },
+          url: `${SPOTIFY_BASE_URL}/tracks/789`,
         }),
       );
     });
 
     it("should reuse cached token for multiple requests", async () => {
       expect.hasAssertions();
-      mockAuthFetch()
+      mockAuthRequest()
         .mockResolvedValueOnce({
-          json: () => Promise.resolve(mockTrackResponse),
-          ok: true,
-        } as Response)
+          arrayBuffer: new ArrayBuffer(0),
+          headers: {},
+          json: mockTrackResponse,
+          status: 200,
+          text: "",
+        })
         .mockResolvedValueOnce({
-          json: () => Promise.resolve(mockTrackResponse),
-          ok: true,
-        } as Response);
+          arrayBuffer: new ArrayBuffer(0),
+          headers: {},
+          json: mockTrackResponse,
+          status: 200,
+          text: "",
+        });
 
       await service.getTrack(mockTrackId);
       await service.getTrack(mockTrackId);
 
-      expect(fetch).toHaveBeenCalledTimes(3);
+      expect(requestUrl).toHaveBeenCalledTimes(3);
     });
 
     it.each([
       {
-        error: "Failed to authenticate with Spotify",
+        error: "Authentication failed: 401 - Invalid credentials",
         mock: {
-          ok: false,
           status: 401,
-          text: () => Promise.resolve("Invalid credentials"),
-        } as Response,
+          text: "Invalid credentials",
+        },
       },
     ])('should throw "$error" error', async ({ error, mock }) => {
       expect.hasAssertions();
-      vi.spyOn(global, "fetch").mockResolvedValue(mock);
+      vi.mocked(requestUrl).mockRejectedValue(mock);
       await expect(service.getTrack(mockTrackId)).rejects.toThrow(error);
     });
 
@@ -125,35 +137,33 @@ describe(SpotifyService, () => {
       },
     ])('should throw "$error" error', async ({ error, mock }) => {
       expect.hasAssertions();
-      vi.spyOn(global, "fetch").mockRejectedValue(mock);
+      vi.mocked(requestUrl).mockRejectedValue(mock);
       await expect(service.getTrack(mockTrackId)).rejects.toThrow(error);
     });
 
     it.each([
-      { error: "Track not found", mock: { ok: false, status: 404 } as Response },
+      { error: "Track not found", mock: { status: 404 } },
       {
         error: "Rate limited. Try again in 60 seconds",
         mock: {
-          headers: new Headers({ "Retry-After": "60" }),
-          ok: false,
+          headers: { "retry-after": "60" },
           status: 429,
-        } as Response,
+        },
       },
       {
         error: "Rate limited. Try again in unknown seconds",
         mock: {
-          headers: new Headers(),
-          ok: false,
+          headers: {},
           status: 429,
-        } as Response,
+        },
       },
       {
         error: "Failed to fetch track: 500",
-        mock: { ok: false, status: 500 } as Response,
+        mock: { status: 500 },
       },
     ])('should throw "$error" error', async ({ error, mock }) => {
       expect.hasAssertions();
-      mockAuthFetch().mockResolvedValueOnce(mock);
+      mockAuthRequest().mockRejectedValueOnce(mock);
       await expect(service.getTrack(mockTrackId)).rejects.toThrow(error);
     });
 
@@ -162,10 +172,13 @@ describe(SpotifyService, () => {
         error: "Failed to fetch track data: Network timeout",
         mock: new Error("Network timeout"),
       },
-      { error: "Failed to fetch track data: String error", mock: "String error" },
+      {
+        error: "Failed to fetch track data: String error",
+        mock: "String error",
+      },
     ])('should throw "$error" error', async ({ error, mock }) => {
       expect.hasAssertions();
-      mockAuthFetch().mockRejectedValueOnce(mock);
+      mockAuthRequest().mockRejectedValueOnce(mock);
       await expect(service.getTrack(mockTrackId)).rejects.toThrow(error);
     });
   });

@@ -27,7 +27,7 @@ export function registerCreateSongNoteCommand(plugin: SongOfTheDayPlugin) {
       }).open();
     },
     id: CREATE_SONG_NOTE_ID,
-    name: "Create Song of the Day Note",
+    name: "Create song note",
   });
 }
 

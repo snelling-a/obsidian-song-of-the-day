@@ -64,19 +64,23 @@ export function createTemplateVariablesFragment(el: DocumentFragment): void {
   el.appendText("Template for note body. Available variables:");
   const variablesContainer = el.createDiv();
 
-  variablesContainer.style.marginTop = "0.5em";
+  variablesContainer.setCssProps({ "margin-top": "0.5em" });
 
   for (const variable of TEMPLATE_VARIABLES) {
     const row = variablesContainer.createDiv();
 
-    row.style.alignItems = "baseline";
-    row.style.display = "flex";
-    row.style.gap = "0.5em";
+    row.setCssProps({
+      "align-items": "baseline",
+      display: "flex",
+      gap: "0.5em",
+    });
 
     const code = row.createEl("code", { text: `{{${variable.name}}}` });
 
-    code.style.display = "inline-block";
-    code.style.minWidth = "130px";
+    code.setCssProps({
+      display: "inline-block",
+      "min-width": "130px",
+    });
 
     row.appendText(variable.description);
   }

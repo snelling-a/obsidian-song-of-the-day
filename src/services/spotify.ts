@@ -1,3 +1,4 @@
+import { requestUrl } from "obsidian";
 import { AccessToken, Track } from "src/types/spotify";
 
 export const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
@@ -61,27 +62,32 @@ export class SpotifyService {
     const token = await this.getAccessToken();
 
     try {
-      const response = await fetch(`${SPOTIFY_BASE_URL}/tracks/${trackId}`, {
+      const response = await requestUrl({
         headers: { Authorization: `Bearer ${token}` },
+        url: `${SPOTIFY_BASE_URL}/tracks/${trackId}`,
       });
 
-      if (!response.ok) {
-        if (response.status === 404) {
+      return response.json as Track;
+    } catch (error: unknown) {
+      if (error && typeof error === "object" && "status" in error) {
+        const status = (error as { status: number }).status;
+
+        if (status === 404) {
           throw new Error("Track not found");
         }
 
-        if (response.status === 429) {
-          const retryAfter = response.headers.get("Retry-After");
+        if (status === 429) {
+          const headers =
+            "headers" in error
+              ? (error as { headers: Record<string, string> }).headers
+              : {};
+          const retryAfter = headers["retry-after"] || "unknown";
 
-          throw new Error(
-            `Rate limited. Try again in ${retryAfter ?? "unknown"} seconds`,
-          );
+          throw new Error(`Rate limited. Try again in ${retryAfter} seconds`);
         }
-        throw new Error(`Failed to fetch track: ${String(response.status)}`);
+        throw new Error(`Failed to fetch track: ${String(status)}`);
       }
 
-      return (await response.json()) as Track;
-    } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
 
       throw new Error(`Failed to fetch track data: ${message}`);
@@ -103,30 +109,31 @@ export class SpotifyService {
     ).toString("base64");
 
     try {
-      const response = await fetch("https://accounts.spotify.com/api/token", {
+      const response = await requestUrl({
         body: "grant_type=client_credentials",
         headers: {
           Authorization: `Basic ${credentials}`,
           "Content-Type": "application/x-www-form-urlencoded",
         },
         method: "POST",
+        url: "https://accounts.spotify.com/api/token",
       });
 
-      if (!response.ok) {
-        const error = await response.text();
-
-        throw new Error(
-          `Authentication failed: ${String(response.status)} - ${error}`,
-        );
-      }
-
-      const data = (await response.json()) as AccessToken;
+      const data = response.json as AccessToken;
 
       this.accessToken = data.access_token;
       this.tokenExpiry = Date.now() + data.expires_in * 1000 - 60000; // Refresh 1 min early
 
       return data.access_token;
     } catch (error: unknown) {
+      if (error && typeof error === "object" && "status" in error) {
+        const status = (error as { status: number }).status;
+        const text =
+          "text" in error ? (error as { text: string }).text : "Unknown error";
+
+        throw new Error(`Authentication failed: ${String(status)} - ${text}`);
+      }
+
       const message = error instanceof Error ? error.message : String(error);
 
       throw new Error(`Failed to authenticate with Spotify: ${message}`);
