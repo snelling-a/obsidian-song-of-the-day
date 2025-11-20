@@ -6,30 +6,65 @@ const MIN_APP_VERSION = "10.0.0";
 const IS_DESKTOP_ONLY = false;
 
 /**
- * Converts kebab-case package name to Title Case display name
- * @param {string} name - Package name (e.g., "obsidian-song-of-the-day")
- * @returns Display name (e.g., "Song of the Day")
+ * Converts package name to plugin app ID and display name.
+ * Strips 'obsidian-' prefix and transforms kebab-case to Title Case.
+ * Small words (articles, prepositions) are lowercase unless first or last.
+ *
+ * @returns Object containing the plugin pluginId and displayName
  */
-function toDisplayName(name) {
-  return name
-    .replace(/^obsidian-/, "")
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+function toDisplayName() {
+  const pluginId = packageName.replace(/^obsidian-/, "");
+  const words = pluginId.split("-");
+  const smallWords = new Set([
+    "a",
+    "an",
+    "and",
+    "at",
+    "but",
+    "for",
+    "in",
+    "of",
+    "on",
+    "or",
+    "the",
+    "to",
+    "with",
+  ]);
+
+  const displayName = words
+    .map((word, index) => {
+      const isFirstOrLast = index === 0 || index === words.length - 1;
+      const shouldCapitalize = isFirstOrLast || !smallWords.has(word);
+
+      return shouldCapitalize
+        ? word.charAt(0).toUpperCase() + word.slice(1)
+        : word;
+    })
     .join(" ");
+
+  return { displayName, pluginId };
 }
+
+const { displayName, pluginId } = toDisplayName();
 
 export const manifest = {
   author: author.name,
   authorUrl: author?.url,
   description,
   fundingUrl: funding?.url,
-  id: packageName,
+  id: pluginId,
   isDesktopOnly: IS_DESKTOP_ONLY,
   minAppVersion: MIN_APP_VERSION,
-  name: toDisplayName(packageName),
+  name: displayName,
   version,
 };
 
+/**
+ * Generates the manifest.json content as a formatted JSON string.
+ * Uses tab indentation for Obsidian plugin manifest format.
+ *
+ * @returns Formatted JSON string of the manifest object
+ */
 export function generateManifest() {
   return JSON.stringify(manifest, null, "\t");
 }
