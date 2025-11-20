@@ -1,12 +1,13 @@
-import { moment, normalizePath, Notice, TFile, TFolder } from "obsidian";
-import { Track } from "src/types/spotify";
+import { normalizePath, Notice, TFile, TFolder } from "obsidian";
+import SongOfTheDayPlugin from "src/main";
+import { SpotifyService } from "src/services/spotify";
+import { SpotifyInputModal } from "src/ui/modal";
+import { formatFileName } from "src/utils/format";
 
-import type SongOfTheDayPlugin from "../main";
+import { generateNoteBody } from "./generateNoteBody";
+import { setFrontmatter } from "./setFrontmatter";
 
-import { TEMPLATE_VARIABLES } from "../constants/template-variables";
-import { SpotifyService } from "../services/spotify";
-import { SpotifyInputModal } from "../ui/modal";
-import { formatFileName } from "../utils/format";
+export const CREATE_SONG_NOTE_ID = "create-song-note";
 
 /**
  * Registers the "Create Song of the Day Note" command with the plugin
@@ -25,7 +26,7 @@ export function registerCreateSongNoteCommand(plugin: SongOfTheDayPlugin) {
         await createSongNote(plugin, service, input);
       }).open();
     },
-    id: "create-song-note",
+    id: CREATE_SONG_NOTE_ID,
     name: "Create Song of the Day Note",
   });
 }
@@ -92,61 +93,10 @@ async function createSongNote(
     } finally {
       loadingNotice.hide();
     }
-  } catch (error: unknown) {
+  } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
 
     new Notice(`Error: ${message}`);
     console.error("Song of the Day error:", error);
   }
-}
-
-/**
- * Generates the note body using the template and track data.
- * Replaces all template variables with their corresponding values.
- * @param track - The Spotify track data
- * @param plugin - The main plugin instance containing settings
- * @returns The rendered note content with all template variables replaced
- */
-function generateNoteBody(track: Track, plugin: SongOfTheDayPlugin): string {
-  let body = plugin.settings.noteTemplate;
-
-  for (const variable of TEMPLATE_VARIABLES) {
-    const pattern = new RegExp(`\\{\\{${variable.name}\\}\\}`, "g");
-    const value = variable.getValue(track, plugin);
-
-    body = body.replace(pattern, value);
-  }
-
-  return body;
-}
-
-/**
- * Sets the frontmatter metadata for the song note
- * @param plugin - The main plugin instance containing settings
- * @param file - The created note file to add metadata to
- * @param track - The Spotify track data to extract metadata from
- */
-async function setFrontmatter(
-  plugin: SongOfTheDayPlugin,
-  file: TFile,
-  track: Track,
-): Promise<void> {
-  const artists = track.artists.map((a) => a.name);
-  const coverImage = track.album.images[0]?.url || "";
-  const createdDate = moment().format(plugin.settings.dateFormat);
-
-  await plugin.app.fileManager.processFrontMatter(
-    file,
-    (frontmatter: Record<string, unknown>) => {
-      frontmatter.title = track.name;
-      frontmatter.artist = artists;
-      frontmatter.album = track.album.name;
-      frontmatter.release_date = track.album.release_date;
-      frontmatter.date = createdDate;
-      frontmatter.cover = coverImage;
-      frontmatter.spotify_url = track.external_urls.spotify;
-      frontmatter.spotify_id = track.id;
-      frontmatter.duration_ms = track.duration_ms;
-    },
-  );
 }

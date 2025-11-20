@@ -1,5 +1,7 @@
 import { AccessToken, Track } from "src/types/spotify";
 
+export const SPOTIFY_BASE_URL = "https://api.spotify.com/v1";
+
 /**
  * Service for interacting with the Spotify Web API
  */
@@ -59,10 +61,9 @@ export class SpotifyService {
     const token = await this.getAccessToken();
 
     try {
-      const response = await fetch(
-        `https://api.spotify.com/v1/tracks/${trackId}`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
+      const response = await fetch(`${SPOTIFY_BASE_URL}/tracks/${trackId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
       if (!response.ok) {
         if (response.status === 404) {

@@ -9,7 +9,7 @@ export const exampleTitle = "I Would Die 4 U";
  * @returns The formatted filename
  */
 export function formatFileName(title: string, format: NoteNameFormat): string {
-  let formattedFileName = title.trim();
+  let formattedFileName = title.trim() || "Untitled";
 
   switch (format) {
     case NOTE_NAME_FORMAT.KEBAB_CASE:
@@ -18,13 +18,17 @@ export function formatFileName(title: string, format: NoteNameFormat): string {
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/^-+|-+$/g, "");
       break;
+    case NOTE_NAME_FORMAT.ORIGINAL:
+      formattedFileName = formattedFileName
+        .replace(/[^a-zA-Z0-9 ]/g, "")
+        .replace(/\s+/g, " ");
+      break;
     case NOTE_NAME_FORMAT.SNAKE_CASE:
       formattedFileName = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "_")
         .replace(/^_+|_+$/g, "");
       break;
-    case NOTE_NAME_FORMAT.ORIGINAL:
     default:
       break;
   }
