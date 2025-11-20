@@ -1,8 +1,7 @@
 import type { App } from "obsidian";
 
 import { Notice } from "obsidian";
-
-import type { SongOfTheDaySettings } from "../types";
+import { SongOfTheDaySettings } from "src/types/settings";
 
 import pkg from "../../package.json";
 import { SpotifyService } from "./spotify";

@@ -1,12 +1,12 @@
 import { Plugin } from "obsidian";
 
 import type { SpotifyService } from "./services/spotify";
-import type { SongOfTheDaySettings } from "./types";
 
 import { registerCommands } from "./commands";
 import { DEFAULT_SETTINGS } from "./constants/settings";
 import { getOrCreateSpotifyService } from "./services/spotify-manager";
 import { SongOfTheDaySettingTab } from "./settings";
+import { SongOfTheDaySettings } from "./types/settings";
 
 export default class SongOfTheDayPlugin extends Plugin {
   settings!: SongOfTheDaySettings;

@@ -1,5 +1,6 @@
+import { Track } from "src/types/spotify";
+
 import type SongOfTheDayPlugin from "../main";
-import type { SpotifyTrack } from "../types";
 
 /**
  * Template variable definition for note templates.
@@ -15,7 +16,7 @@ export interface TemplateVariable {
    * @param plugin - The plugin instance (for accessing settings like dateFormat)
    * @returns The formatted value to replace the template variable
    */
-  getValue: (track: SpotifyTrack, plugin: SongOfTheDayPlugin) => string;
+  getValue: (track: Track, plugin: SongOfTheDayPlugin) => string;
   /**
    * Variable name (without braces, e.g., "title")
    */

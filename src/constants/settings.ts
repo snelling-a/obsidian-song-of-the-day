@@ -1,6 +1,5 @@
 import { moment } from "obsidian";
-
-import type { SongOfTheDaySettings } from "../types";
+import { SongOfTheDaySettings } from "src/types/settings";
 
 export const NOTE_NAME_FORMAT = {
   KEBAB_CASE: "kebab-case",
