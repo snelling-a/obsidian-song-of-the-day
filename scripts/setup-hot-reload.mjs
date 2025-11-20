@@ -4,10 +4,10 @@ import { join } from "path";
 
 dotenv.config();
 
-const HOT_RELOAD_URL =
-  "https://raw.githubusercontent.com/pjeby/hot-reload/master/main.js";
-const HOT_RELOAD_MANIFEST_URL =
-  "https://raw.githubusercontent.com/pjeby/hot-reload/master/manifest.json";
+const HOT_RELOAD_BASE =
+  "https://raw.githubusercontent.com/pjeby/hot-reload/master";
+const HOT_RELOAD_URL = `${HOT_RELOAD_BASE}/main.js`;
+const HOT_RELOAD_MANIFEST_URL = `${HOT_RELOAD_BASE}/manifest.json`;
 
 async function downloadFile(url) {
   const response = await fetch(url);
@@ -56,7 +56,7 @@ async function setupHotReload() {
     writeFileSync(join(hotReloadDir, "manifest.json"), manifest);
     console.log("✓ Downloaded manifest.json");
 
-    console.log("\n✅ Hot-reload plugin installed successfully!");
+    console.log("\n✓ Hot-reload plugin installed successfully!");
     console.log("\nNext steps:");
     console.log("1. Restart Obsidian or reload plugins (Ctrl/Cmd + R)");
     console.log("2. Enable 'Hot-Reload' in Settings → Community plugins");
