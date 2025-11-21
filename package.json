@@ -1,0 +1,40 @@
+{
+	"author": {
+		"name": "snelling-a",
+		"url": "https://github.com/snelling-a"
+	},
+	"bugs": {
+		"url": "https://github.com/snelling-a/obsidian-song-of-the-day/issues"
+	},
+	"description": "Create song notes from Spotify links with metadata and album art.",
+	"devDependencies": {
+		"@types/node": "^16.11.6",
+		"@typescript-eslint/eslint-plugin": "5.29.0",
+		"@typescript-eslint/parser": "5.29.0",
+		"builtin-modules": "3.3.0",
+		"esbuild": "0.17.3",
+		"obsidian": "latest",
+		"tslib": "2.4.0",
+		"typescript": "4.7.4"
+	},
+	"funding": {
+		"type": "github",
+		"url": "https://github.com/sponsors/snelling-a"
+	},
+	"homepage": "https://github.com/snelling-a/obsidian-song-of-the-day",
+	"keywords": [
+		"obsidian",
+		"obsidian-plugin",
+		"spotify",
+		"music"
+	],
+	"license": "Unlicense",
+	"main": "main.js",
+	"name": "obsidian-song-of-the-day",
+	"scripts": {
+		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"dev": "node esbuild.config.mjs",
+		"version": "node version-bump.mjs && git add manifest.json versions.json"
+	},
+	"version": "0.1.0",
+}
