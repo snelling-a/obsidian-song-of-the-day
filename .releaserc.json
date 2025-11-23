@@ -1,0 +1,19 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    "semantic-release-obsidian-plugin",
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "main.js", "label": "main.js" },
+          { "path": "manifest.json", "label": "manifest.json" },
+          { "path": "styles.css", "label": "styles.css" }
+        ]
+      }
+    ]
+  ],
+  "tagFormat": "${version}"
+}

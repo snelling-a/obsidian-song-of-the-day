@@ -1,10 +1,11 @@
 {
-	"id": "obsidian-song-of-the-day",
-	"name": "Song of the Day",
-	"version": "0.1.0",
-	"minAppVersion": "0.15.0",
-	"description": "Track and share your daily song discoveries.",
-	"author": "Andrew Snelling",
-	"authorUrl": "https://github.com/andrewsnelling",
-	"isDesktopOnly": false
+  "author": "snelling-a",
+  "authorUrl": "https://github.com/snelling-a.md",
+  "description": "Track and share your daily song discoveries.",
+  "fundingUrl": "https://github.com/sponsors/snelling-a",
+  "id": "song-of-the-day",
+  "isDesktopOnly": false,
+  "minAppVersion": "0.10.0",
+  "name": "Sample Plugin",
+  "version": "0.1.0"
 }
