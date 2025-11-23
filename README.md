@@ -1,94 +1,187 @@
-# Obsidian Sample Plugin
+# Song of the Day
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+An Obsidian plugin that lets you create song notes from Spotify links with metadata and album art.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+- Create notes from Spotify track links or IDs
+- Automatically fetch song metadata (title, artist, album, release date, duration)
+- Embed album artwork in frontmatter
+- Customizable note templates with variable support
+- Configurable note naming formats
+- Custom date formatting using moment.js
 
-## First time developing plugins?
+## Setup
 
-Quick starting guide for new plugin devs:
+### Getting Spotify API Credentials
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+To use this plugin, you need to create a Spotify application to get API credentials:
 
-## Releasing new releases
+1. **Log in to Spotify Developer Dashboard**
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+   Go to [https://developer.spotify.com/dashboard](https://developer.spotify.com/dashboard) and log in with your Spotify account.
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+   ![Spotify Dashboard Login](.github/screenshots/spotify-dashboard-login.png)
 
-## Adding your plugin to the community plugin list
+2. **Create a new app**
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+   Click the "Create app" button.
 
-## How to use
+   ![Create App Button](.github/screenshots/spotify-create-app-button.png)
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+3. **Fill out the app form**
+   - **App name**: Choose any name (e.g., "Obsidian Song of the Day")
+   - **App description**: Add a description (e.g., "For Obsidian plugin")
+   - **Redirect URIs**: Leave empty or add any placeholder
+   - **APIs used**: Select "Web API"
+   - Accept the terms and click "Save"
 
-## Manually installing the plugin
+   ![App Form](.github/screenshots/spotify-app-form.png)
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+4. **Copy your credentials**
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint ./src/`
+   After creating the app, click "Settings" to view your credentials. You'll need:
+   - **Client ID**: Visible on the settings page
+   - **Client Secret**: Click "View client secret" to reveal it
 
-## Funding URL
+   ![Credentials](.github/screenshots/spotify-credentials.png)
 
-You can include funding URLs where people who use your plugin can financially support it.
+5. **Add credentials to Obsidian**
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+   Open Obsidian Settings, go to the "Song of the Day" plugin settings, and paste your Client ID and Client Secret.
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
+## Usage
+
+1. Copy a Spotify track link (e.g., from the Spotify app's share menu)
+2. In Obsidian, open the command palette (Cmd/Ctrl + P)
+3. Run the command "Create song note"
+4. Paste the Spotify link or track ID
+5. A new note will be created with song metadata
+
+### Supported Spotify Formats
+
+- Full URL: `https://open.spotify.com/track/3n3Ppam7vgaVa1iaRUc9Lp`
+- URI: `spotify:track:3n3Ppam7vgaVa1iaRUc9Lp`
+- Track ID: `3n3Ppam7vgaVa1iaRUc9Lp`
+
+## Settings
+
+### Note Settings
+
+- **Output folder**: Where to create song notes (relative to vault root)
+- **Note name structure**: Choose what information to include:
+  - Song only (e.g., "I Would Die 4 U")
+  - Artist - Song (e.g., "Prince - I Would Die 4 U")
+  - Song - Artist (e.g., "I Would Die 4 U - Prince")
+- **Note name casing**: Choose how to format the text:
+  - Original (preserves capitalization)
+  - kebab-case (e.g., "i-would-die-4-u")
+  - snake_case (e.g., "i_would_die_4_u")
+- **Date format**: Customize using moment.js syntax
+- **Note template**: Define your note structure using template variables
+
+### Template Variables
+
+Available variables for use in your note template:
+
+- `{{title}}` - Song title
+- `{{artist}}` - Primary artist name
+- `{{artists}}` - All artists (comma-separated)
+- `{{album}}` - Album name
+- `{{releaseDate}}` - Album release date
+- `{{date}}` - Note creation date (uses your date format setting)
+- `{{duration}}` - Song duration in mm:ss format
+- `{{spotifyUrl}}` - Link to song on Spotify
+- `{{spotifyId}}` - Spotify track ID
+- `{{cover}}` - Album cover image URL
+
+## Installation
+
+### Using BRAT (Recommended)
+
+This plugin is not yet available in the Obsidian Community Plugins store. You can install it using the [BRAT plugin](https://github.com/TfTHacker/obsidian42-brat):
+
+1. Install [BRAT](obsidian://show-plugin?id=obsidian42-brat) from the Community Plugins in Obsidian
+2. Open the command palette and run the command **BRAT: Add a beta plugin for testing**
+3. Enter this repository URL: `https://github.com/snelling-a/obsidian-song-of-the-day`
+4. Enable the plugin in Settings > Community Plugins
+
+### Manual Installation
+
+1. Download the latest release from the [releases page](https://github.com/snelling-a/obsidian-song-of-the-day/releases)
+2. Extract the files to your vault's plugins folder: `VaultFolder/.obsidian/plugins/obsidian-song-of-the-day/`
+3. Reload Obsidian
+4. Enable the plugin in Settings > Community Plugins
+
+## Development
+
+### Prerequisites
+
+- Node.js 16 or higher
+- npm or yarn
+
+### Setup
+
+```bash
+# Clone the repository
+git clone https://github.com/snelling-a/obsidian-song-of-the-day.git
+
+# Install dependencies
+npm install
 ```
 
-If you have multiple URLs, you can also do:
+### Development & Testing
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
+#### Option 1: Using Environment Variable (Recommended)
+
+Set the `VAULT_ROOT` environment variable to automatically copy the built plugin to your vault during development:
+
+**Using a .env file:**
+
+```bash
+# Create a .env file in the project root
+echo "VAULT_ROOT=/path/to/your/vault" > .env
+
+# Start development build (watches for changes and auto-copies to vault)
+npm run dev
 ```
 
-## API Documentation
+**Using command line:**
 
-See https://github.com/obsidianmd/obsidian-api
+```bash
+# Set as environment variable for the session
+export VAULT_ROOT=/path/to/your/vault
+npm run dev
+
+# Or set inline for a single command
+VAULT_ROOT=/path/to/your/vault npm run dev
+```
+
+The dev build will automatically:
+
+- Copy built files to `VAULT_ROOT/.obsidian/plugins/obsidian-song-of-the-day/`
+- Install and update the [hot-reload plugin](https://github.com/pjeby/hot-reload) for live reloading
+- Watch for file changes and rebuild automatically
+
+#### Option 2: Manual Symlink
+
+Alternatively, create a symlink in your vault's plugins folder:
+
+```bash
+ln -s /path/to/obsidian-song-of-the-day /path/to/vault/.obsidian/plugins/obsidian-song-of-the-day
+npm run dev
+```
+
+#### Building for Production
+
+```bash
+npm run build
+```
+
+## Support
+
+If you encounter any issues or have feature requests, please [open an issue](https://github.com/snelling-a/obsidian-song-of-the-day/issues).
+
+## License
+
+[Unlicense](LICENSE)
