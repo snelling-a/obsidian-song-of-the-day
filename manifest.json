@@ -6,6 +6,6 @@
   "id": "song-of-the-day",
   "isDesktopOnly": false,
   "minAppVersion": "0.10.0",
-  "name": "Sample Plugin",
+  "name": "Song of the Day",
   "version": "0.1.0"
 }
