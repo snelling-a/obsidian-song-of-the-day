@@ -15,6 +15,15 @@ let storedCredentials:
   | { clientId: string; clientSecret: string } = undefined;
 
 /**
+ * Clears the cached Spotify service instance.
+ * Call this after OAuth tokens are updated to ensure the next service instance
+ * is recreated with the new tokens.
+ */
+export function clearCachedService(): void {
+  cachedService = null;
+}
+
+/**
  * Gets or creates a Spotify service instance for the plugin.
  * Handles credential validation and user notification if credentials are missing.
  * Recreates the service if credentials have changed.

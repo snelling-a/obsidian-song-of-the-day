@@ -2,6 +2,7 @@ import SongOfTheDayPlugin from "main";
 import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import { FIELD_REGISTRY } from "src/constants/field-registry";
 import { SpotifyService } from "src/services/spotify";
+import { clearCachedService } from "src/services/spotify/spotify-manager";
 import { CSS_CLASSES, CSS_VARIABLES } from "src/ui/css";
 import { FolderSuggest } from "src/ui/folder-suggest";
 import { OAuthCallbackModal } from "src/ui/oauth-callback-modal";
@@ -556,6 +557,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
         = Date.now() + tokens.expiresIn * 1000;
 
       await this.plugin.saveSettings();
+      clearCachedService();
 
       new Notice("Successfully authenticated with Spotify!");
 
