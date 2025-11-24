@@ -142,11 +142,13 @@ export default defineConfig([
     files: ["**/*.test.ts", "**/*.spec.ts"],
     plugins: { vitest },
     rules: {
-      ...vitest.configs.recommended.rules,
+      ...vitest.configs.all.rules,
+      "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
       "jsdoc/require-jsdoc": "off",
       "vitest/no-hooks": "off",
       "vitest/prefer-called-times": "off",
+      "vitest/prefer-expect-assertions": "off",
       "vitest/valid-title": [
         "error",
         {
@@ -167,7 +169,7 @@ export default defineConfig([
     },
   },
   {
-    files: ["./src/settings/types.ts"],
+    files: ["./src/settings/types.ts", "./src/services/spotify/index.ts"],
     rules: {
       "@typescript-eslint/naming-convention": [
         "error",
@@ -182,6 +184,11 @@ export default defineConfig([
         "error",
         {
           format: ["camelCase", "UPPER_CASE", "snake_case"],
+          selector: "objectLiteralProperty",
+        },
+        {
+          format: null,
+          modifiers: ["requiresQuotes"],
           selector: "objectLiteralProperty",
         },
       ],
