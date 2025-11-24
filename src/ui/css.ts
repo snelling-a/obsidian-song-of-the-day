@@ -7,4 +7,5 @@ export const CSS_CLASSES = {
 export const CSS_VARIABLES = {
   FONT_UI_SMALLER: "var(--font-ui-smaller)",
   TEXT_ERROR: "var(--text-error)",
+  TEXT_SUCCESS: "var(--text-success)",
 } as const;

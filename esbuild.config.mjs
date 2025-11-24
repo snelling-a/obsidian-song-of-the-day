@@ -136,7 +136,6 @@ if (prod) {
   process.exit(0);
 }
 else {
-  console.log({ devPath, devVaultPath, hotReloadPath, pkgName: pkg.name });
   if (!devVaultPath) {
     console.group("⚠️  Development vault not set ⚠️");
     console.warn("VAULT_ROOT env variable not set ");
