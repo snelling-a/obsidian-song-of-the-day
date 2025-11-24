@@ -59,7 +59,7 @@ jobs:
           name: coverage-report
           path: coverage/
       - name: Report coverage to PR
-        uses: romeovs/lcov-reporter-action@v0.3.1
+        uses: romeovs/lcov-reporter-action@v0.4.0
         if: github.event_name == 'pull_request'
         with:
           lcov-file: ./coverage/lcov.info
