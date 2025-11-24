@@ -339,6 +339,7 @@ export class SpotifyService {
 
   /**
    * Refreshes the access token using the refresh token.
+   * Uses PKCE flow (no client secret required).
    * @throws Error if refresh token is not available or refresh fails
    */
   private async refreshAccessToken(): Promise<void> {
@@ -352,12 +353,9 @@ export class SpotifyService {
       refresh_token: this.refreshToken,
     });
 
-    const authHeader = btoa(`${this.clientId}:${this.clientSecret}`);
-
     const response = await requestUrl({
       body: params.toString(),
       headers: {
-        Authorization: `Basic ${authHeader}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
       method: "POST",
