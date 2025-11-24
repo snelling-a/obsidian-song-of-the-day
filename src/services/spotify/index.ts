@@ -41,33 +41,7 @@ export class SpotifyService {
     this.clientId = clientId;
     this.clientSecret = clientSecret;
     this.api = SpotifyApi.withClientCredentials(clientId, clientSecret, [], {
-      fetch: async (
-        input: RequestInfo | URL,
-        init?: RequestInit,
-      ): Promise<Response> => {
-        let url: string;
-        if (typeof input === "string") {
-          url = input;
-        }
-        else if (input instanceof URL) {
-          url = input.href;
-        }
-        else {
-          url = input.url;
-        }
-
-        const response = await requestUrl({
-          body: init?.body as ArrayBuffer | string | undefined,
-          headers: init?.headers as Record<string, string>,
-          method: init?.method ?? "GET",
-          url,
-        });
-
-        return new Response(JSON.stringify(response.json), {
-          headers: response.headers,
-          status: response.status,
-        });
-      },
+      fetch: this.customFetch,
     });
   }
 
@@ -267,12 +241,18 @@ export class SpotifyService {
     this.tokenExpiry = tokenExpiry;
     this.onTokenRefresh = onTokenRefresh ?? null;
 
-    this.userApi = SpotifyApi.withAccessToken(this.clientId, {
-      access_token: accessToken,
-      expires_in: Math.max(0, Math.floor((tokenExpiry - Date.now()) / 1000)),
-      refresh_token: refreshToken,
-      token_type: "Bearer",
-    });
+    this.userApi = SpotifyApi.withAccessToken(
+      this.clientId,
+      {
+        access_token: accessToken,
+        expires_in: Math.max(0, Math.floor((tokenExpiry - Date.now()) / 1000)),
+        refresh_token: refreshToken,
+        token_type: "Bearer",
+      },
+      {
+        fetch: this.customFetch,
+      },
+    );
   }
 
   /**
@@ -282,6 +262,38 @@ export class SpotifyService {
   public isUserAuthenticated(): boolean {
     return this.userApi !== null;
   }
+
+  /**
+   * Custom fetch implementation that adapts Obsidian's requestUrl to the Fetch API.
+   * Required because Obsidian doesn't provide a global fetch function.
+   */
+  private readonly customFetch = async (
+    input: RequestInfo | URL,
+    init?: RequestInit,
+  ): Promise<Response> => {
+    let url: string;
+    if (typeof input === "string") {
+      url = input;
+    }
+    else if (input instanceof URL) {
+      url = input.href;
+    }
+    else {
+      url = input.url;
+    }
+
+    const response = await requestUrl({
+      body: init?.body as ArrayBuffer | string | undefined,
+      headers: init?.headers as Record<string, string>,
+      method: init?.method ?? "GET",
+      url,
+    });
+
+    return new Response(JSON.stringify(response.json), {
+      headers: response.headers,
+      status: response.status,
+    });
+  };
 
   /**
    * Ensures the access token is valid, refreshing if necessary.
@@ -362,12 +374,18 @@ export class SpotifyService {
       this.refreshToken = data.refresh_token;
     }
 
-    this.userApi = SpotifyApi.withAccessToken(this.clientId, {
-      access_token: data.access_token,
-      expires_in: expiresIn,
-      refresh_token: this.refreshToken,
-      token_type: "Bearer",
-    });
+    this.userApi = SpotifyApi.withAccessToken(
+      this.clientId,
+      {
+        access_token: data.access_token,
+        expires_in: expiresIn,
+        refresh_token: this.refreshToken,
+        token_type: "Bearer",
+      },
+      {
+        fetch: this.customFetch,
+      },
+    );
 
     if (this.onTokenRefresh) {
       await this.onTokenRefresh({
