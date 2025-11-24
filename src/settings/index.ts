@@ -577,6 +577,6 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    */
   private markInputInvalid(inputEl: HTMLInputElement): void {
     inputEl.addClass(CSS_CLASSES.INVALID);
-    inputEl.style.borderColor = CSS_VARIABLES.TEXT_ERROR;
+    inputEl.style.borderColor = CSS_VARIABLES.BACKGROUND_MODIFIER_ERROR;
   }
 }
