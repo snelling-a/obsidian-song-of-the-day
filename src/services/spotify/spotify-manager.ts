@@ -76,7 +76,14 @@ export function getOrCreateSpotifyService(
         plugin.settings.spotifyRefreshToken = tokens.refreshToken;
         plugin.settings.spotifyTokenExpiry
           = Date.now() + tokens.expiresIn * 1000;
-        await plugin.saveSettings();
+        try {
+          await plugin.saveSettings();
+        }
+        catch (error: unknown) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error("Failed to save refreshed tokens:", message);
+          new Notice("Failed to save refreshed Spotify tokens");
+        }
       },
     );
   }

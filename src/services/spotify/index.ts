@@ -27,6 +27,7 @@ export class SpotifyService {
   private clientId: string;
   private clientSecret: string;
   private onTokenRefresh: null | TokenRefreshCallback = null;
+  private refreshPromise: null | Promise<void> = null;
   private refreshToken: null | string = null;
   private tokenExpiry: null | number = null;
   private userApi: null | SpotifyApi = null;
@@ -284,6 +285,7 @@ export class SpotifyService {
 
   /**
    * Ensures the access token is valid, refreshing if necessary.
+   * Uses a promise queue to prevent concurrent refresh attempts.
    * @throws Error if not authenticated or refresh fails
    */
   private async ensureValidToken(): Promise<void> {
@@ -294,7 +296,18 @@ export class SpotifyService {
     }
 
     if (this.isTokenExpired()) {
-      await this.refreshAccessToken();
+      if (this.refreshPromise) {
+        await this.refreshPromise;
+      }
+      else {
+        this.refreshPromise = this.refreshAccessToken();
+        try {
+          await this.refreshPromise;
+        }
+        finally {
+          this.refreshPromise = null;
+        }
+      }
     }
   }
 
