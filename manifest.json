@@ -1,11 +1,11 @@
 {
-  "author": "snelling-a",
-  "authorUrl": "https://github.com/snelling-a",
-  "description": "Create song notes from Spotify links with metadata and album art.",
-  "fundingUrl": "https://github.com/sponsors/snelling-a",
-  "id": "song-of-the-day",
-  "isDesktopOnly": false,
-  "minAppVersion": "0.10.0",
-  "name": "Song of the Day",
-  "version": "0.1.0"
+    "author": "snelling-a",
+    "authorUrl": "https://github.com/snelling-a",
+    "description": "Create song notes from Spotify links with metadata and album art.",
+    "fundingUrl": "https://github.com/sponsors/snelling-a",
+    "id": "song-of-the-day",
+    "isDesktopOnly": false,
+    "minAppVersion": "0.10.0",
+    "name": "Song of the Day",
+    "version": "1.0.2"
 }
