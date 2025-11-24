@@ -202,18 +202,18 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
 
     const toggleContainer = setting.settingEl.createDiv();
     toggleContainer.setCssProps({
-      "display": "grid",
-      "gap": "var(--size-4-2)",
+      display: "grid",
+      gap: CSS_VARIABLES.SIZE_4_2,
       "grid-template-columns": "repeat(auto-fill, minmax(12ch, 1fr))",
-      "margin-top": "var(--size-4-2)",
+      "margin-top": CSS_VARIABLES.SIZE_4_2,
     });
 
     for (const field of FIELD_REGISTRY) {
       const fieldEl = toggleContainer.createDiv();
       fieldEl.setCssProps({
         "align-items": "center",
-        "display": "flex",
-        "gap": "var(--size-4-2)",
+        display: "flex",
+        gap: CSS_VARIABLES.SIZE_4_2,
       });
 
       const toggle = fieldEl.createEl("input", {

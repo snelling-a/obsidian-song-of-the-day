@@ -64,6 +64,7 @@ export default defineConfig([
         "error",
         { blankLine: "always", next: "return", prev: "*" },
       ],
+      "@stylistic/quote-props": ["error", "as-needed"],
       "@typescript-eslint/explicit-function-return-type": ["warn"],
       "@typescript-eslint/explicit-member-accessibility": [
         "warn",
@@ -116,7 +117,7 @@ export default defineConfig([
         { argsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/switch-exhaustiveness-check": "error",
-      "curly": ["error", "all"],
+      curly: ["error", "all"],
       "jsdoc/match-description": [
         "warn",
         { message: "Use sentence case with proper punctuation and spacing." },

@@ -332,7 +332,7 @@ export class SpotifyService {
     const response = await requestUrl({
       body: params.toString(),
       headers: {
-        "Authorization": `Basic ${authHeader}`,
+        Authorization: `Basic ${authHeader}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
       method: "POST",

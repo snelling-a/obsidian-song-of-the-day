@@ -15,13 +15,13 @@ export function createTemplateVariablesFragment(el: DocumentFragment): void {
     const row = variablesContainer.createDiv();
     row.setCssProps({
       "align-items": "baseline",
-      "display": "flex",
-      "gap": "0.5em",
+      display: "flex",
+      gap: "0.5em",
     });
 
     const code = row.createEl("code", { text: `{{${variable.name}}}` });
     code.setCssProps({
-      "display": "inline-block",
+      display: "inline-block",
       "min-width": "130px",
     });
 
