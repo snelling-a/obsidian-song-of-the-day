@@ -5,6 +5,19 @@
     "@semantic-release/release-notes-generator",
     "semantic-release-obsidian-plugin",
     [
+      "@semantic-release/npm",
+      {
+        "npmPublish": false
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "assets": ["package.json", "package-lock.json", "manifest.json"],
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+      }
+    ],
+    [
       "@semantic-release/github",
       {
         "assets": [
