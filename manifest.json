@@ -1,7 +1,7 @@
 {
   "author": "snelling-a",
-  "authorUrl": "https://github.com/snelling-a.md",
-  "description": "Track and share your daily song discoveries.",
+  "authorUrl": "https://github.com/snelling-a",
+  "description": "Create song notes from Spotify links with metadata and album art.",
   "fundingUrl": "https://github.com/sponsors/snelling-a",
   "id": "song-of-the-day",
   "isDesktopOnly": false,
