@@ -19,11 +19,7 @@ export default class SongOfTheDayPlugin extends Plugin {
    * @returns Configured Spotify service, or null if credentials not set
    */
   public getSpotifyService(): null | SpotifyService {
-    this.spotifyService = getOrCreateSpotifyService(
-      this.settings,
-      this.app,
-      this.spotifyService,
-    );
+    this.spotifyService = getOrCreateSpotifyService(this);
 
     return this.spotifyService;
   }
