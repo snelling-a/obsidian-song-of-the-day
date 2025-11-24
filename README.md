@@ -32,7 +32,7 @@ To use this plugin, you need to create a Spotify application to get API credenti
 3. **Fill out the app form**
    - **App name**: Choose any name (e.g., "Obsidian Song of the Day")
    - **App description**: Add a description (e.g., "For Obsidian plugin")
-   - **Redirect URIs**: Leave empty or add any placeholder
+   - **Redirect URIs**: Enter `https://example.com/callback` (required for OAuth to work)
    - **APIs used**: Select "Web API"
    - Accept the terms and click "Save"
 
