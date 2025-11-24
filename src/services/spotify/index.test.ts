@@ -3,13 +3,10 @@ import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 // Mock obsidian before importing anything that uses it
 vi.mock(import("obsidian"));
 
+import { Scopes } from "@spotify/web-api-ts-sdk";
 import { requestUrl } from "obsidian";
 
-import {
-  REDIRECT_URI,
-  SPOTIFY_ACCOUNTS_BASE_URL,
-  SPOTIFY_SCOPES,
-} from "./constants";
+import { REDIRECT_URI, SPOTIFY_ACCOUNTS_BASE_URL } from "./constants";
 import { SpotifyService } from "./index";
 
 const mockClientId = "test-client-id";
@@ -51,7 +48,9 @@ describe(SpotifyService, () => {
       expect(url.searchParams.get("client_id")).toBe(mockClientId);
       expect(url.searchParams.get("response_type")).toBe("code");
       expect(url.searchParams.get("redirect_uri")).toBe(REDIRECT_URI);
-      expect(url.searchParams.get("scope")).toBe(SPOTIFY_SCOPES.join(" "));
+      expect(url.searchParams.get("scope")).toBe(
+        Scopes.playlistModify.join(" "),
+      );
     });
 
     it("should include PKCE parameters in URL", async () => {

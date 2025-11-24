@@ -1,8 +1,3 @@
-export const SPOTIFY_SCOPES = [
-  "playlist-modify-public",
-  "playlist-modify-private",
-];
-
 /** OAuth redirect URI for Spotify authentication */
 export const REDIRECT_URI = "https://example.com/callback";
 /** Spotify Accounts service base URL */

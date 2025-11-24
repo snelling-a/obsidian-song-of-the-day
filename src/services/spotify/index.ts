@@ -1,11 +1,12 @@
-import { AccessToken, SpotifyApi, Track } from "@spotify/web-api-ts-sdk";
+import {
+  AccessToken,
+  Scopes,
+  SpotifyApi,
+  Track,
+} from "@spotify/web-api-ts-sdk";
 import { requestUrl } from "obsidian";
 
-import {
-  REDIRECT_URI,
-  SPOTIFY_ACCOUNTS_BASE_URL,
-  SPOTIFY_SCOPES,
-} from "./constants";
+import { REDIRECT_URI, SPOTIFY_ACCOUNTS_BASE_URL } from "./constants";
 
 /**
  * OAuth token data
@@ -116,7 +117,7 @@ export class SpotifyService {
       code_challenge_method: "S256",
       redirect_uri: REDIRECT_URI,
       response_type: "code",
-      scope: SPOTIFY_SCOPES.join(" "),
+      scope: Scopes.playlistModify.join(" "),
       state,
     });
 
