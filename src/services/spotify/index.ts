@@ -269,7 +269,7 @@ export class SpotifyService {
 
     this.userApi = SpotifyApi.withAccessToken(this.clientId, {
       access_token: accessToken,
-      expires_in: Math.floor((tokenExpiry - Date.now()) / 1000),
+      expires_in: Math.max(0, Math.floor((tokenExpiry - Date.now()) / 1000)),
       refresh_token: refreshToken,
       token_type: "Bearer",
     });
