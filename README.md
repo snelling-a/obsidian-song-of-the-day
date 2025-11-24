@@ -95,6 +95,35 @@ Available variables for use in your note template:
 - `{{spotifyId}}` - Spotify track ID
 - `{{cover}}` - Album cover image URL
 
+## Security & Privacy
+
+### What Data is Stored
+
+This plugin stores the following data locally in your vault at `.obsidian/plugins/obsidian-song-of-the-day/data.json`:
+
+- **Spotify API credentials** (Client ID & Client Secret)
+- **OAuth tokens** (Access Token & Refresh Token for playlist access)
+- **Track IDs** (List of songs you've added to your playlist)
+
+### Important Security Considerations
+
+- **Plain text storage**: All data is stored unencrypted in plain text, which is standard practice for Obsidian plugins
+- **Vault syncing**: If you sync your vault (Obsidian Sync, iCloud, Dropbox, etc.), these credentials will be synced across devices
+- **Vault access**: Anyone with access to your vault files can read these credentials
+
+### Best Practices
+
+- **Keep your vault secure**: Use appropriate file system permissions
+- **Be careful with vault sharing**: Don't share your vault publicly or with untrusted parties
+- **Credential rotation**: If you believe your credentials have been compromised, revoke them in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and generate new ones
+- **Limited scope**: The plugin only requests the minimal Spotify API permissions needed (playlist modification)
+
+### Data Usage
+
+- **No telemetry**: This plugin does not collect or transmit any usage data
+- **Direct API calls**: All Spotify API requests are made directly from your device to Spotify
+- **Local only**: Your song notes and metadata remain entirely local to your vault
+
 ## Installation
 
 ### Using BRAT (Recommended)
