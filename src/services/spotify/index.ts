@@ -57,7 +57,7 @@ export class SpotifyService {
         }
 
         const response = await requestUrl({
-          body: init?.body as string | undefined,
+          body: init?.body as ArrayBuffer | string | undefined,
           headers: init?.headers as Record<string, string>,
           method: init?.method ?? "GET",
           url,
