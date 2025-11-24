@@ -25,7 +25,6 @@ type TokenRefreshCallback = (tokens: OAuthTokens) => Promise<void>;
 export class SpotifyService {
   private api: SpotifyApi;
   private clientId: string;
-  private clientSecret: string;
   private onTokenRefresh: null | TokenRefreshCallback = null;
   private refreshPromise: null | Promise<void> = null;
   private refreshToken: null | string = null;
@@ -39,7 +38,6 @@ export class SpotifyService {
    */
   constructor(clientId: string, clientSecret: string) {
     this.clientId = clientId;
-    this.clientSecret = clientSecret;
     this.api = SpotifyApi.withClientCredentials(clientId, clientSecret, [], {
       fetch: this.customFetch,
     });
@@ -74,7 +72,23 @@ export class SpotifyService {
       url: `${SPOTIFY_ACCOUNTS_BASE_URL}/api/token`,
     });
 
-    const data = response.json as AccessToken;
+    const data = response.json as AccessToken & {
+      error?: string;
+      error_description?: string;
+    };
+
+    if (
+      data.error
+      || !data.access_token
+      || !data.expires_in
+      || !data.refresh_token
+    ) {
+      const errorMessage
+        = data.error_description
+          ?? data.error
+          ?? `status ${String(response.status)}`;
+      throw new Error(`Failed to exchange authorization code: ${errorMessage}`);
+    }
 
     return {
       accessToken: data.access_token,
@@ -362,7 +376,19 @@ export class SpotifyService {
       url: `${SPOTIFY_ACCOUNTS_BASE_URL}/api/token`,
     });
 
-    const data = response.json as AccessToken;
+    const data = response.json as AccessToken & {
+      error?: string;
+      error_description?: string;
+    };
+
+    if (data.error || !data.access_token || !data.expires_in) {
+      const errorMessage
+        = data.error_description
+          ?? data.error
+          ?? `status ${String(response.status)}`;
+      throw new Error(`Failed to refresh access token: ${errorMessage}`);
+    }
+
     const expiresIn = data.expires_in;
     const newTokenExpiry = Date.now() + expiresIn * 1000;
 
