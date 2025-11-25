@@ -42,7 +42,7 @@ async function addTrackToPlaylist(
   try {
     if (!service.isUserAuthenticated()) {
       new Notice(
-        "Not authenticated with Spotify. Please authenticate in settings to add songs to playlist.",
+        "Not authenticated with Spotify. Authenticate in settings to add songs to playlist.",
       );
 
       return;
@@ -81,13 +81,13 @@ async function createSongNote(
   input: string,
 ): Promise<void> {
   try {
-    const loadingNotice = new Notice("Fetching song data from Spotify...", 0);
+    const loadingNotice = new Notice("Fetching song data from Spotify", 0);
 
     try {
       const trackId = service.extractTrackId(input);
       if (!trackId) {
         new Notice(
-          "Invalid Spotify link or ID. Please provide a valid Spotify track URL, URI, or ID",
+          "Invalid Spotify link or ID. Provide a valid Spotify track URL, URI, or ID.",
         );
 
         return;

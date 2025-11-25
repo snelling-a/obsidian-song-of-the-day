@@ -37,7 +37,7 @@ export function getOrCreateSpotifyService(
     !plugin.settings.spotifyClientId
     || !plugin.settings.spotifyClientSecret
   ) {
-    new Notice("Please configure Spotify API credentials in settings");
+    new Notice("Configure Spotify API credentials in settings");
     plugin.app.setting.open();
     plugin.app.setting.openTabById(pkg.name);
 
@@ -82,7 +82,7 @@ export function getOrCreateSpotifyService(
         catch (error: unknown) {
           const message = error instanceof Error ? error.message : String(error);
           console.error("Failed to save refreshed tokens:", message);
-          new Notice("Failed to save refreshed Spotify tokens");
+          new Notice("Failed to save Spotify tokens");
         }
       },
     );
