@@ -31,6 +31,48 @@ export function registerCreateSongNoteCommand(
 }
 
 /**
+ * Adds a track to the configured Spotify playlist.
+ * Checks local cache to prevent duplicates.
+ */
+async function addTrackToPlaylist(
+  plugin: SongOfTheDayPlugin,
+  service: SpotifyService,
+  track: Track,
+): Promise<void> {
+  try {
+    if (!service.isUserAuthenticated()) {
+      new Notice(
+        "Not authenticated with Spotify. Authenticate in settings to add songs to playlist.",
+      );
+
+      return;
+    }
+
+    if (plugin.settings.addedTrackIds.includes(track.id)) {
+      new Notice("Song already in playlist");
+
+      return;
+    }
+
+    const trackUri = `spotify:track:${track.id}`;
+    await service.addTrackToPlaylist(plugin.settings.playlistId, trackUri);
+
+    // Re-check before mutating to prevent race conditions
+    if (!plugin.settings.addedTrackIds.includes(track.id)) {
+      plugin.settings.addedTrackIds.push(track.id);
+      await plugin.saveSettings();
+    }
+
+    new Notice("Added to playlist");
+  }
+  catch (error: unknown) {
+    const message = error instanceof Error ? error.message : String(error);
+    new Notice(`Failed to add to playlist: ${message}`);
+    console.error("Failed to add track to playlist:", error);
+  }
+}
+
+/**
  * Creates a song note from a Spotify track link or ID.
  */
 async function createSongNote(
@@ -39,13 +81,13 @@ async function createSongNote(
   input: string,
 ): Promise<void> {
   try {
-    const loadingNotice = new Notice("Fetching song data from Spotify...", 0);
+    const loadingNotice = new Notice("Fetching song data from Spotify", 0);
 
     try {
       const trackId = service.extractTrackId(input);
       if (!trackId) {
         new Notice(
-          "Invalid Spotify link or ID. Please provide a valid Spotify track URL, URI, or ID",
+          "Invalid Spotify link or ID. Provide a valid Spotify track URL, URI, or ID.",
         );
 
         return;
@@ -79,7 +121,10 @@ async function createSongNote(
         }
         catch (error) {
           // Folder might already exist with different casing on case-insensitive filesystems
-          if (error instanceof Error && !error.message.includes("Folder already exists")) {
+          if (
+            error instanceof Error
+            && !error.message.includes("Folder already exists")
+          ) {
             throw error;
           }
         }
@@ -93,7 +138,11 @@ async function createSongNote(
       const leaf = plugin.app.workspace.getLeaf();
       await leaf.openFile(file);
 
-      new Notice(`Created song note: ${track.name}`);
+      new Notice(`Created note: ${track.name}`);
+
+      if (plugin.settings.playlistId) {
+        await addTrackToPlaylist(plugin, service, track);
+      }
     }
     finally {
       loadingNotice.hide();

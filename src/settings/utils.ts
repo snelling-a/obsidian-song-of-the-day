@@ -1,4 +1,5 @@
 import { TEMPLATE_VARIABLES } from "src/constants/template-variables";
+import { CSS_VARIABLES } from "src/ui/css";
 
 /**
  * Creates a DocumentFragment with formatted template variable documentation.
@@ -9,19 +10,19 @@ export function createTemplateVariablesFragment(el: DocumentFragment): void {
   el.appendText("Template for note body. Available variables:");
 
   const variablesContainer = el.createDiv();
-  variablesContainer.setCssProps({ "margin-top": "0.5em" });
+  variablesContainer.setCssProps({ "margin-top": CSS_VARIABLES.SIZE_4_2 });
 
   for (const variable of TEMPLATE_VARIABLES) {
     const row = variablesContainer.createDiv();
     row.setCssProps({
       "align-items": "baseline",
-      "display": "flex",
-      "gap": "0.5em",
+      display: "flex",
+      gap: CSS_VARIABLES.SIZE_4_2,
     });
 
     const code = row.createEl("code", { text: `{{${variable.name}}}` });
     code.setCssProps({
-      "display": "inline-block",
+      display: "inline-block",
       "min-width": "130px",
     });
 

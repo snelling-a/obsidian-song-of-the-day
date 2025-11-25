@@ -1,56 +1,94 @@
-import type { App } from "obsidian";
+import type SongOfTheDayPlugin from "main";
 
 import { Notice } from "obsidian";
-import { SongOfTheDaySettings } from "src/settings/types";
 
 import pkg from "../../../package.json";
 import { SpotifyService } from "../spotify";
 
 /**
- * Stored credentials for comparing against settings changes
+ * Cached Spotify service instance and credentials
  */
+let cachedService: null | SpotifyService = null;
 let storedCredentials:
   | null
   | undefined
   | { clientId: string; clientSecret: string } = undefined;
 
 /**
+ * Clears the cached Spotify service instance.
+ * Call this after OAuth tokens are updated to ensure the next service instance
+ * is recreated with the new tokens.
+ */
+export function clearCachedService(): void {
+  cachedService = null;
+}
+
+/**
  * Gets or creates a Spotify service instance for the plugin.
  * Handles credential validation and user notification if credentials are missing.
  * Recreates the service if credentials have changed.
- * @param settings Plugin settings containing Spotify credentials
- * @param app Obsidian app instance for opening settings
- * @param currentService Current Spotify service instance (if any)
+ * @param plugin The plugin instance
  * @returns Configured Spotify service, or null if credentials not set
  */
 export function getOrCreateSpotifyService(
-  settings: SongOfTheDaySettings,
-  app: App,
-  currentService: null | SpotifyService,
+  plugin: SongOfTheDayPlugin,
 ): null | SpotifyService {
-  if (!settings.spotifyClientId || !settings.spotifyClientSecret) {
-    new Notice("Please configure Spotify API credentials in settings");
-    app.setting.open();
-    app.setting.openTabById(pkg.name);
+  if (
+    !plugin.settings.spotifyClientId
+    || !plugin.settings.spotifyClientSecret
+  ) {
+    new Notice("Configure Spotify API credentials in settings");
+    plugin.app.setting.open();
+    plugin.app.setting.openTabById(pkg.name);
 
     return null;
   }
 
   if (
-    currentService
-    && storedCredentials?.clientId === settings.spotifyClientId
-    && storedCredentials.clientSecret === settings.spotifyClientSecret
+    cachedService
+    && storedCredentials?.clientId === plugin.settings.spotifyClientId
+    && storedCredentials.clientSecret === plugin.settings.spotifyClientSecret
   ) {
-    return currentService;
+    return cachedService;
   }
 
   storedCredentials = {
-    clientId: settings.spotifyClientId,
-    clientSecret: settings.spotifyClientSecret,
+    clientId: plugin.settings.spotifyClientId,
+    clientSecret: plugin.settings.spotifyClientSecret,
   };
 
-  return new SpotifyService(
-    settings.spotifyClientId,
-    settings.spotifyClientSecret,
+  const service = new SpotifyService(
+    plugin.settings.spotifyClientId,
+    plugin.settings.spotifyClientSecret,
   );
+
+  if (
+    plugin.settings.spotifyAccessToken
+    && plugin.settings.spotifyRefreshToken
+    && plugin.settings.spotifyTokenExpiry
+  ) {
+    service.initializeUserApi(
+      plugin.settings.spotifyAccessToken,
+      plugin.settings.spotifyRefreshToken,
+      plugin.settings.spotifyTokenExpiry,
+      async (tokens) => {
+        plugin.settings.spotifyAccessToken = tokens.accessToken;
+        plugin.settings.spotifyRefreshToken = tokens.refreshToken;
+        plugin.settings.spotifyTokenExpiry
+          = Date.now() + tokens.expiresIn * 1000;
+        try {
+          await plugin.saveSettings();
+        }
+        catch (error: unknown) {
+          const message = error instanceof Error ? error.message : String(error);
+          console.error("Failed to save refreshed tokens:", message);
+          new Notice("Failed to save Spotify tokens");
+        }
+      },
+    );
+  }
+
+  cachedService = service;
+
+  return service;
 }
