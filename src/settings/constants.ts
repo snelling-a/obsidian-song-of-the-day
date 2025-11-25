@@ -37,12 +37,17 @@ function getDefaultFrontmatterFields(): FrontmatterFields {
 }
 
 export const DEFAULT_SETTINGS: SongOfTheDaySettings = {
+  addedTrackIds: [],
   dateFormat: moment.HTML5_FMT.DATE,
   frontmatterFields: getDefaultFrontmatterFields(),
   noteNameCasing: NOTE_NAME_CASING.ORIGINAL,
   noteNameStructure: NOTE_NAME_STRUCTURE.SONG_ONLY,
   noteTemplate: "# {{title}}\n\n",
   outputFolder: "",
+  playlistId: "",
+  spotifyAccessToken: "",
   spotifyClientId: "",
   spotifyClientSecret: "",
+  spotifyRefreshToken: "",
+  spotifyTokenExpiry: 0,
 };

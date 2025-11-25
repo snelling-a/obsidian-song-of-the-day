@@ -1,8 +1,11 @@
 import SongOfTheDayPlugin from "main";
-import { App, PluginSettingTab, Setting } from "obsidian";
+import { App, Notice, PluginSettingTab, Setting } from "obsidian";
 import { FIELD_REGISTRY } from "src/constants/field-registry";
+import { SpotifyService } from "src/services/spotify";
+import { clearCachedService } from "src/services/spotify/spotify-manager";
 import { CSS_CLASSES, CSS_VARIABLES } from "src/ui/css";
 import { FolderSuggest } from "src/ui/folder-suggest";
+import { OAuthCallbackModal } from "src/ui/oauth-callback-modal";
 import { TemplateSuggest } from "src/ui/template-suggest";
 import {
   getNoteNameCasingLabel,
@@ -21,7 +24,9 @@ import { createTemplateVariablesFragment } from "./utils";
 /** Settings tab for the Song of the Day plugin. */
 export class SongOfTheDaySettingTab extends PluginSettingTab {
   public readonly plugin: SongOfTheDayPlugin;
+  private codeVerifier: null | string = null;
   private credentialsHelpEl: HTMLElement | null = null;
+  private oauthState: null | string = null;
 
   /**
    * Creates the settings tab for the plugin.
@@ -36,9 +41,14 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   /** @inheritdoc */
   public display(): void {
     this.containerEl.empty();
+    new Setting(this.containerEl).setHeading().setName("API credentials");
     this.createApiCredentialsHelp(this.containerEl);
     this.createSpotifyClientIdSetting(this.containerEl);
     this.createSpotifyClientSecretSetting(this.containerEl);
+    new Setting(this.containerEl).setHeading().setName("Playlist settings");
+    this.createAuthenticationStatus(this.containerEl);
+    this.createAuthenticationButton(this.containerEl);
+    this.createPlaylistIdSetting(this.containerEl);
     new Setting(this.containerEl).setHeading().setName("Note settings");
     this.createOutputFolderSetting(this.containerEl);
     this.createNoteNameStructureSetting(this.containerEl);
@@ -86,6 +96,53 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   }
 
   /**
+   * Creates the Spotify authentication button.
+   * @param containerEl The container element to add the button to
+   */
+  private createAuthenticationButton(containerEl: HTMLElement): void {
+    const service = this.plugin.getSpotifyService();
+    const isAuthenticated = service?.isUserAuthenticated() ?? false;
+
+    new Setting(containerEl)
+      .setName("Spotify authentication")
+      .setDesc(
+        isAuthenticated
+          ? "Re-authenticate to refresh connection"
+          : "Authenticate with Spotify to enable playlist features",
+      )
+      .addButton((button) => {
+        button
+          .setButtonText(isAuthenticated ? "Re-authenticate" : "Authenticate")
+          .onClick(async () => {
+            await this.handleAuthentication();
+          });
+      });
+  }
+
+  /**
+   * Creates the authentication status display.
+   * @param containerEl The container element to add the status to
+   */
+  private createAuthenticationStatus(containerEl: HTMLElement): void {
+    const service = this.plugin.getSpotifyService();
+    const isAuthenticated = service?.isUserAuthenticated() ?? false;
+
+    const setting = new Setting(containerEl)
+      .setName("Connection status")
+      .setDesc(
+        isAuthenticated
+          ? "Connected to Spotify"
+          : "Not connected. Authenticate below to add songs to playlists.",
+      );
+
+    if (isAuthenticated) {
+      setting.descEl.setCssProps({
+        color: CSS_VARIABLES.TEXT_SUCCESS,
+      });
+    }
+  }
+
+  /**
    * Creates the date format setting with moment.js format preview.
    * @param containerEl The container element to add the setting to
    */
@@ -98,7 +155,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
         el.createEl("a", {
           attr: { target: "_blank" },
           href: MOMENT_FORMAT_DOCS_URL,
-          // eslint-disable-next-line obsidianmd/ui/sentence-case
+          // eslint-disable-next-line obsidianmd/ui/sentence-case -- Link text in mid-sentence should not be capitalized
           text: "format reference",
         });
         el.createEl("br");
@@ -145,12 +202,11 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       .setDesc("Select which fields to include in note frontmatter");
 
     const toggleContainer = setting.settingEl.createDiv();
-    /* eslint-disable @typescript-eslint/naming-convention, @stylistic/quote-props */
     toggleContainer.setCssProps({
       display: "grid",
-      gap: "var(--size-4-2)",
+      gap: CSS_VARIABLES.SIZE_4_2,
       "grid-template-columns": "repeat(auto-fill, minmax(12ch, 1fr))",
-      "margin-top": "var(--size-4-2)",
+      "margin-top": CSS_VARIABLES.SIZE_4_2,
     });
 
     for (const field of FIELD_REGISTRY) {
@@ -158,7 +214,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       fieldEl.setCssProps({
         "align-items": "center",
         display: "flex",
-        gap: "var(--size-4-2)",
+        gap: CSS_VARIABLES.SIZE_4_2,
       });
 
       const toggle = fieldEl.createEl("input", {
@@ -181,7 +237,6 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
         toggle.dispatchEvent(new Event("change"));
       });
     }
-    /* eslint-enable @typescript-eslint/naming-convention, @stylistic/quote-props */
   }
 
   /**
@@ -262,7 +317,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       .setDesc("Where to create song notes (relative to vault root)")
       .addText((component) => {
         component
-          // eslint-disable-next-line obsidianmd/ui/sentence-case
+          // eslint-disable-next-line obsidianmd/ui/sentence-case -- Example folder path includes plugin name capitalization
           .setPlaceholder("Music/Song of the Day")
           .setValue(this.plugin.settings.outputFolder)
           .onChange(async (value) => {
@@ -275,13 +330,54 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   }
 
   /**
+   * Creates the playlist ID setting.
+   * @param containerEl The container element to add the setting to
+   */
+  private createPlaylistIdSetting(containerEl: HTMLElement): void {
+    new Setting(containerEl)
+      .setName("Playlist ID")
+      .setDesc("Spotify playlist ID or URL where songs will be added")
+      .addText((text) => {
+        text
+
+          .setPlaceholder(
+            // eslint-disable-next-line obsidianmd/ui/sentence-case -- Spotify URI format requires lowercase 'spotify:' prefix
+            "spotify:playlist:37i9dQZF1DXcBWIGoYBM5M or playlist URL",
+          )
+          .setValue(this.plugin.settings.playlistId)
+          .onChange(async (value) => {
+            const trimmedValue = value.trim();
+            let playlistId = trimmedValue;
+
+            if (trimmedValue.includes("spotify.com/playlist/")) {
+              const match = /spotify\.com\/playlist\/([a-zA-Z0-9]+)/.exec(
+                trimmedValue,
+              );
+              if (match) {
+                playlistId = match[1];
+              }
+            }
+            else if (trimmedValue.startsWith("spotify:playlist:")) {
+              playlistId = trimmedValue.replace("spotify:playlist:", "");
+            }
+
+            this.plugin.settings.playlistId = playlistId;
+            await this.plugin.saveSettings();
+          });
+        text.inputEl.setCssProps({
+          width: "100%",
+        });
+      });
+  }
+
+  /**
    * Creates the Spotify Client ID setting with validation.
    * @param containerEl The container element to add the setting to
    */
   private createSpotifyClientIdSetting(containerEl: HTMLElement): void {
     const setting = new Setting(containerEl)
       .setName("Spotify client ID")
-      .setDesc("Your Spotify application client ID");
+      .setDesc("Spotify application client ID.");
 
     let errorEl: HTMLElement | null = null;
 
@@ -336,7 +432,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   private createSpotifyClientSecretSetting(containerEl: HTMLElement): void {
     const setting = new Setting(containerEl)
       .setName("Spotify client secret")
-      .setDesc("Your Spotify application client secret");
+      .setDesc("Spotify application client secret.");
 
     let errorEl: HTMLElement | null = null;
 
@@ -387,11 +483,102 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   }
 
   /**
+   * Handles the OAuth authentication flow.
+   * @todo use Web Viewer API if available in Obsidian
+   */
+  private async handleAuthentication(): Promise<void> {
+    if (!this.plugin.settings.spotifyClientId) {
+      // eslint-disable-next-line obsidianmd/ui/sentence-case -- 'Client ID' is Spotify's official terminology from their API documentation
+      new Notice("Please configure Spotify Client ID first");
+
+      return;
+    }
+
+    try {
+      const { codeVerifier, state, url } = await SpotifyService.generateAuthUrl(
+        this.plugin.settings.spotifyClientId,
+      );
+
+      this.codeVerifier = codeVerifier;
+      this.oauthState = state;
+
+      window.open(url, "_blank");
+
+      new OAuthCallbackModal(this.app, (callbackUrl) => {
+        void this.handleOAuthCallback(callbackUrl);
+      }).open();
+    }
+    catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.error("Authentication error:", error);
+      new Notice(`Authentication failed: ${message}`);
+    }
+  }
+
+  /**
+   * Handles the OAuth callback URL.
+   * @param callbackUrl The callback URL from Spotify
+   */
+  private async handleOAuthCallback(callbackUrl: string): Promise<void> {
+    if (!this.codeVerifier || !this.oauthState) {
+      new Notice("Authentication session expired. Please try again.");
+
+      return;
+    }
+
+    try {
+      const url = new URL(callbackUrl);
+      const code = url.searchParams.get("code");
+      const state = url.searchParams.get("state");
+
+      if (!code) {
+        new Notice("No authorization code found in URL");
+
+        return;
+      }
+
+      if (state !== this.oauthState) {
+        new Notice(
+          "Invalid authentication state. Possible security issue. Please try again.",
+        );
+
+        return;
+      }
+
+      const tokens = await SpotifyService.exchangeCodeForTokens(
+        this.plugin.settings.spotifyClientId,
+        code,
+        this.codeVerifier,
+      );
+
+      this.plugin.settings.spotifyAccessToken = tokens.accessToken;
+      this.plugin.settings.spotifyRefreshToken = tokens.refreshToken;
+      this.plugin.settings.spotifyTokenExpiry
+        = Date.now() + tokens.expiresIn * 1000;
+
+      await this.plugin.saveSettings();
+      clearCachedService();
+
+      new Notice("Successfully authenticated with Spotify!");
+
+      this.display();
+    }
+    catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      new Notice(`Failed to complete authentication: ${message}`);
+    }
+    finally {
+      this.codeVerifier = null;
+      this.oauthState = null;
+    }
+  }
+
+  /**
    * Marks an input as invalid with error styling.
    * @param inputEl The input element to mark as invalid
    */
   private markInputInvalid(inputEl: HTMLInputElement): void {
     inputEl.addClass(CSS_CLASSES.INVALID);
-    inputEl.style.borderColor = CSS_VARIABLES.TEXT_ERROR;
+    inputEl.style.borderColor = CSS_VARIABLES.BACKGROUND_MODIFIER_ERROR;
   }
 }

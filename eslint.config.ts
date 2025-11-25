@@ -1,3 +1,5 @@
+// @ts-expect-error - esm module without types
+import eslintComments from "@eslint-community/eslint-plugin-eslint-comments/configs";
 import stylistic from "@stylistic/eslint-plugin";
 import vitest from "@vitest/eslint-plugin";
 import jsdoc from "eslint-plugin-jsdoc";
@@ -38,6 +40,14 @@ export default defineConfig([
   },
   // @ts-expect-error - obsidianmd config types are incompatible with eslint config types
   ...obsidianmd.configs.recommended,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- esm module without types
+  eslintComments.recommended,
+  {
+    files: ["**/*.{ts,?js}"],
+    rules: {
+      "@eslint-community/eslint-comments/require-description": "error",
+    },
+  },
   {
     files: ["**/*.{ts,?js}"],
     ...stylistic.configs.customize({ quotes: "double", semi: true }),
@@ -64,6 +74,7 @@ export default defineConfig([
         "error",
         { blankLine: "always", next: "return", prev: "*" },
       ],
+      "@stylistic/quote-props": ["error", "as-needed"],
       "@typescript-eslint/explicit-function-return-type": ["warn"],
       "@typescript-eslint/explicit-member-accessibility": [
         "warn",
@@ -116,7 +127,7 @@ export default defineConfig([
         { argsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/switch-exhaustiveness-check": "error",
-      "curly": ["error", "all"],
+      curly: ["error", "all"],
       "jsdoc/match-description": [
         "warn",
         { message: "Use sentence case with proper punctuation and spacing." },
@@ -133,7 +144,11 @@ export default defineConfig([
       ],
       "obsidianmd/ui/sentence-case": [
         "error",
-        { acronyms: ["ID", "URI", "URL", "API"], brands: ["Spotify"] },
+        {
+          acronyms: ["API", "ID", "URI", "URL"],
+          allowAutoFix: true,
+          brands: ["Spotify"],
+        },
       ],
     },
   },
@@ -142,11 +157,13 @@ export default defineConfig([
     files: ["**/*.test.ts", "**/*.spec.ts"],
     plugins: { vitest },
     rules: {
-      ...vitest.configs.recommended.rules,
+      ...vitest.configs.all.rules,
+      "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
       "jsdoc/require-jsdoc": "off",
       "vitest/no-hooks": "off",
       "vitest/prefer-called-times": "off",
+      "vitest/prefer-expect-assertions": "off",
       "vitest/valid-title": [
         "error",
         {
@@ -167,7 +184,7 @@ export default defineConfig([
     },
   },
   {
-    files: ["./src/settings/types.ts"],
+    files: ["./src/settings/types.ts", "./src/services/spotify/index.ts"],
     rules: {
       "@typescript-eslint/naming-convention": [
         "error",
@@ -182,6 +199,11 @@ export default defineConfig([
         "error",
         {
           format: ["camelCase", "UPPER_CASE", "snake_case"],
+          selector: "objectLiteralProperty",
+        },
+        {
+          format: null,
+          modifiers: ["requiresQuotes"],
           selector: "objectLiteralProperty",
         },
       ],

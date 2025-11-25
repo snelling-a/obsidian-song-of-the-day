@@ -4,6 +4,7 @@ import { defineConfig } from "vitest/config";
 export default defineConfig({
   resolve: {
     alias: {
+      obsidian: resolve(__dirname, "./test/__mocks__/obsidian.ts"),
       src: resolve(__dirname, "./src"),
       test: resolve(__dirname, "./test"),
     },
@@ -25,7 +26,7 @@ export default defineConfig({
     globals: true,
     include: ["src/**/*.test.ts"],
     mockReset: true,
-    reporters: ["verbose"],
+    reporters: ["tree"],
     restoreMocks: true,
   },
 });

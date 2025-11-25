@@ -38,7 +38,7 @@ export class SpotifyInputModal extends Modal {
 
     new Setting(contentEl)
       .setName("Spotify link or ID")
-      .setDesc("Paste a Spotify track URL, URI, or track ID")
+      .setDesc("Paste a Spotify track URL, URI, or track ID.")
       .addText((text) => {
         this.inputEl = text.inputEl;
         text
