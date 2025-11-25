@@ -32,7 +32,7 @@ To use this plugin, you need to create a Spotify application to get API credenti
 3. **Fill out the app form**
    - **App name**: Choose any name (e.g., "Obsidian Song of the Day")
    - **App description**: Add a description (e.g., "For Obsidian plugin")
-   - **Redirect URIs**: Leave empty or add any placeholder
+   - **Redirect URIs**: Enter `https://example.com/callback` (required for OAuth to work)
    - **APIs used**: Select "Web API"
    - Accept the terms and click "Save"
 
@@ -94,6 +94,35 @@ Available variables for use in your note template:
 - `{{spotifyUrl}}` - Link to song on Spotify
 - `{{spotifyId}}` - Spotify track ID
 - `{{cover}}` - Album cover image URL
+
+## Security & Privacy
+
+### What Data is Stored
+
+This plugin stores the following data locally in your vault at `.obsidian/plugins/obsidian-song-of-the-day/data.json`:
+
+- **Spotify API credentials** (Client ID & Client Secret)
+- **OAuth tokens** (Access Token & Refresh Token for playlist access)
+- **Track IDs** (List of songs you've added to your playlist)
+
+### Important Security Considerations
+
+- **Plain text storage**: All data is stored unencrypted in plain text, which is standard practice for Obsidian plugins
+- **Vault syncing**: If you sync your vault (Obsidian Sync, iCloud, Dropbox, etc.), these credentials will be synced across devices
+- **Vault access**: Anyone with access to your vault files can read these credentials
+
+### Best Practices
+
+- **Keep your vault secure**: Use appropriate file system permissions
+- **Be careful with vault sharing**: Don't share your vault publicly or with untrusted parties
+- **Credential rotation**: If you believe your credentials have been compromised, revoke them in the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and generate new ones
+- **Limited scope**: The plugin only requests the minimal Spotify API permissions needed (playlist modification)
+
+### Data Usage
+
+- **No telemetry**: This plugin does not collect or transmit any usage data
+- **Direct API calls**: All Spotify API requests are made directly from your device to Spotify
+- **Local only**: Your song notes and metadata remain entirely local to your vault
 
 ## Installation
 

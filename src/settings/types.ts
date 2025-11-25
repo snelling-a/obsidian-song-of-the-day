@@ -18,12 +18,17 @@ export type NoteNameStructure
   = (typeof NOTE_NAME_STRUCTURE)[keyof typeof NOTE_NAME_STRUCTURE];
 
 export interface SongOfTheDaySettings {
+  addedTrackIds: string[];
   dateFormat: string;
   frontmatterFields: FrontmatterFields;
   noteNameCasing: NoteNameCasing;
   noteNameStructure: NoteNameStructure;
   noteTemplate: string;
   outputFolder: string;
+  playlistId: string;
+  spotifyAccessToken: string;
   spotifyClientId: string;
   spotifyClientSecret: string;
+  spotifyRefreshToken: string;
+  spotifyTokenExpiry: number;
 }
