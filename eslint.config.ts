@@ -1,3 +1,5 @@
+// @ts-expect-error - esm module without types
+import eslintComments from "@eslint-community/eslint-plugin-eslint-comments/configs";
 import stylistic from "@stylistic/eslint-plugin";
 import vitest from "@vitest/eslint-plugin";
 import jsdoc from "eslint-plugin-jsdoc";
@@ -38,6 +40,14 @@ export default defineConfig([
   },
   // @ts-expect-error - obsidianmd config types are incompatible with eslint config types
   ...obsidianmd.configs.recommended,
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- esm module without types
+  eslintComments.recommended,
+  {
+    files: ["**/*.{ts,?js}"],
+    rules: {
+      "@eslint-community/eslint-comments/require-description": "error",
+    },
+  },
   {
     files: ["**/*.{ts,?js}"],
     ...stylistic.configs.customize({ quotes: "double", semi: true }),
@@ -134,7 +144,11 @@ export default defineConfig([
       ],
       "obsidianmd/ui/sentence-case": [
         "error",
-        { acronyms: ["ID", "URI", "URL", "API"], brands: ["Spotify"] },
+        {
+          acronyms: ["API", "ID", "URI", "URL"],
+          allowAutoFix: true,
+          brands: ["Spotify"],
+        },
       ],
     },
   },

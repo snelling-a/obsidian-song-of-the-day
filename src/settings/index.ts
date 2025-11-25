@@ -155,7 +155,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
         el.createEl("a", {
           attr: { target: "_blank" },
           href: MOMENT_FORMAT_DOCS_URL,
-          // eslint-disable-next-line obsidianmd/ui/sentence-case
+          // eslint-disable-next-line obsidianmd/ui/sentence-case -- Link text in mid-sentence should not be capitalized
           text: "format reference",
         });
         el.createEl("br");
@@ -317,7 +317,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       .setDesc("Where to create song notes (relative to vault root)")
       .addText((component) => {
         component
-          // eslint-disable-next-line obsidianmd/ui/sentence-case
+          // eslint-disable-next-line obsidianmd/ui/sentence-case -- Example folder path includes plugin name capitalization
           .setPlaceholder("Music/Song of the Day")
           .setValue(this.plugin.settings.outputFolder)
           .onChange(async (value) => {
@@ -336,12 +336,12 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   private createPlaylistIdSetting(containerEl: HTMLElement): void {
     new Setting(containerEl)
       .setName("Playlist ID")
-      .setDesc("The Spotify playlist ID or URL where songs will be added")
+      .setDesc("Spotify playlist ID or URL where songs will be added")
       .addText((text) => {
         text
 
           .setPlaceholder(
-            // eslint-disable-next-line obsidianmd/ui/sentence-case
+            // eslint-disable-next-line obsidianmd/ui/sentence-case -- Spotify URI format requires lowercase 'spotify:' prefix
             "spotify:playlist:37i9dQZF1DXcBWIGoYBM5M or playlist URL",
           )
           .setValue(this.plugin.settings.playlistId)
@@ -377,7 +377,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   private createSpotifyClientIdSetting(containerEl: HTMLElement): void {
     const setting = new Setting(containerEl)
       .setName("Spotify client ID")
-      .setDesc("Your Spotify application client ID");
+      .setDesc("Spotify application client ID.");
 
     let errorEl: HTMLElement | null = null;
 
@@ -432,7 +432,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   private createSpotifyClientSecretSetting(containerEl: HTMLElement): void {
     const setting = new Setting(containerEl)
       .setName("Spotify client secret")
-      .setDesc("Your Spotify application client secret");
+      .setDesc("Spotify application client secret.");
 
     let errorEl: HTMLElement | null = null;
 
@@ -488,7 +488,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    */
   private async handleAuthentication(): Promise<void> {
     if (!this.plugin.settings.spotifyClientId) {
-      // eslint-disable-next-line obsidianmd/ui/sentence-case
+      // eslint-disable-next-line obsidianmd/ui/sentence-case -- 'Client ID' is Spotify's official terminology from their API documentation
       new Notice("Please configure Spotify Client ID first");
 
       return;

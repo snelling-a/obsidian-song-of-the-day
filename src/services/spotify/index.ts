@@ -66,9 +66,7 @@ export class SpotifyService {
 
     const response = await requestUrl({
       body: params.toString(),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       method: "POST",
       url: `${SPOTIFY_ACCOUNTS_BASE_URL}/api/token`,
     });
@@ -264,9 +262,7 @@ export class SpotifyService {
         refresh_token: refreshToken,
         token_type: "Bearer",
       },
-      {
-        fetch: this.customFetch,
-      },
+      { fetch: this.customFetch },
     );
   }
 
@@ -370,9 +366,7 @@ export class SpotifyService {
 
     const response = await requestUrl({
       body: params.toString(),
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
       method: "POST",
       url: `${SPOTIFY_ACCOUNTS_BASE_URL}/api/token`,
     });
@@ -407,9 +401,7 @@ export class SpotifyService {
         refresh_token: this.refreshToken,
         token_type: "Bearer",
       },
-      {
-        fetch: this.customFetch,
-      },
+      { fetch: this.customFetch },
     );
 
     if (this.onTokenRefresh) {

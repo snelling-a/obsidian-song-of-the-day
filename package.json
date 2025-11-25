@@ -11,6 +11,7 @@
     },
     "description": "Create song notes from Spotify links with metadata and album art.",
     "devDependencies": {
+        "@eslint-community/eslint-plugin-eslint-comments": "4.5.0",
         "@eslint/js": "9.39.1",
         "@semantic-release/exec": "7.1.0",
         "@semantic-release/git": "10.0.1",
@@ -70,5 +71,5 @@
         "typecheck": "tsc --noEmit"
     },
     "type": "module",
-    "version": "1.2.0"
+    "version": "1.2.2"
 }

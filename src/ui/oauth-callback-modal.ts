@@ -36,7 +36,7 @@ export class OAuthCallbackModal extends Modal {
 
     new Setting(contentEl)
       .setName("Callback URL")
-      .setDesc("Paste the full URL from your browser after authorization")
+      .setDesc("Paste the full URL from your browser after authorization.")
       .addText((text) => {
         text
           .setPlaceholder(REDIRECT_URI)
