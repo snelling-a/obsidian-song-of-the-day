@@ -144,7 +144,11 @@ export default defineConfig([
       ],
       "obsidianmd/ui/sentence-case": [
         "error",
-        { acronyms: ["ID", "URI", "URL", "API"], brands: ["Spotify"] },
+        {
+          acronyms: ["API", "ID", "URI", "URL"],
+          allowAutoFix: true,
+          brands: ["Spotify"],
+        },
       ],
     },
   },

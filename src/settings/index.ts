@@ -336,7 +336,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   private createPlaylistIdSetting(containerEl: HTMLElement): void {
     new Setting(containerEl)
       .setName("Playlist ID")
-      .setDesc("The Spotify playlist ID or URL where songs will be added")
+      .setDesc("Spotify playlist ID or URL where songs will be added")
       .addText((text) => {
         text
 
@@ -377,7 +377,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   private createSpotifyClientIdSetting(containerEl: HTMLElement): void {
     const setting = new Setting(containerEl)
       .setName("Spotify client ID")
-      .setDesc("Your Spotify application client ID");
+      .setDesc("Spotify application client ID.");
 
     let errorEl: HTMLElement | null = null;
 
@@ -432,7 +432,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   private createSpotifyClientSecretSetting(containerEl: HTMLElement): void {
     const setting = new Setting(containerEl)
       .setName("Spotify client secret")
-      .setDesc("Your Spotify application client secret");
+      .setDesc("Spotify application client secret.");
 
     let errorEl: HTMLElement | null = null;
 
