@@ -1,8 +1,14 @@
-import { execSync } from "child_process";
 import esbuild from "esbuild";
-import { copyFileSync, existsSync, mkdirSync, rmSync, writeFileSync } from "fs";
-import { builtinModules } from "module";
-import process from "process";
+import { execSync } from "node:child_process";
+import {
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import { builtinModules } from "node:module";
+import process from "node:process";
 
 import pkg from "./package.json" with { type: "json" };
 
@@ -13,11 +19,11 @@ ${pkg.homepage}
 */
 `;
 
-const prod = process.argv[2] === "production";
-const devVaultPath = process.env.VAULT_ROOT;
-const devVaultPluginDir = `${process.env.VAULT_ROOT}/.obsidian/plugins`;
-const devPath = `${devVaultPluginDir}/${pkg.name}`;
-const hotReloadPath = `${devVaultPluginDir}/hot-reload`;
+const production = process.argv[2] === "production";
+const developmentVaultPath = process.env.VAULT_ROOT;
+const developmentVaultPluginDirectory = `${process.env.VAULT_ROOT}/.obsidian/plugins`;
+const developmentPath = `${developmentVaultPluginDirectory}/${pkg.name}`;
+const hotReloadPath = `${developmentVaultPluginDirectory}/hot-reload`;
 
 function cloneHotReload(repoUrl) {
   console.log("Cloning hot-reload plugin...");
@@ -25,30 +31,28 @@ function cloneHotReload(repoUrl) {
     execSync(`git clone "${repoUrl}" "${hotReloadPath}"`, {
       stdio: "inherit",
     });
-  }
-  catch (err) {
-    console.error("Error cloning hot-reload plugin:", err.message);
+  } catch (error) {
+    console.error("Error cloning hot-reload plugin:", error.message);
   }
 }
 
-function copyToDevVault() {
-  if (!devVaultPath) {
+function copyToDevelopmentVault() {
+  if (!developmentVaultPath) {
     return;
   }
 
   try {
-    mkdirSync(devPath, { recursive: true });
-    copyFileSync("main.js", `${devPath}/main.js`);
-    copyFileSync("styles.css", `${devPath}/styles.css`);
-    copyFileSync("manifest.json", `${devPath}/manifest.json`);
-    writeFileSync(`${devPath}/.hotreload`, "");
+    mkdirSync(developmentPath, { recursive: true });
+    copyFileSync("main.js", `${developmentPath}/main.js`);
+    copyFileSync("styles.css", `${developmentPath}/styles.css`);
+    copyFileSync("manifest.json", `${developmentPath}/manifest.json`);
+    writeFileSync(`${developmentPath}/.hotreload`, "");
 
-    execSync(`touch "${devPath}/main.js"`, { stdio: "pipe" });
+    execSync(`touch "${developmentPath}/main.js"`, { stdio: "pipe" });
 
-    console.log("Copied to dev vault:", devPath);
-  }
-  catch (err) {
-    console.error("Error copying to dev vault:", err.message);
+    console.log("Copied to dev vault:", developmentPath);
+  } catch (error) {
+    console.error("Error copying to dev vault:", error.message);
   }
 }
 
@@ -61,10 +65,10 @@ function ensureHotReloadPlugin() {
     return;
   }
 
-  const gitDir = `${hotReloadPath}/.git`;
+  const gitDirectory = `${hotReloadPath}/.git`;
   const hotReloadRepo = "https://github.com/pjeby/hot-reload.git";
 
-  if (existsSync(gitDir)) {
+  if (existsSync(gitDirectory)) {
     try {
       execSync("git rev-parse --git-dir", {
         cwd: hotReloadPath,
@@ -76,14 +80,12 @@ function ensureHotReloadPlugin() {
         cwd: hotReloadPath,
         stdio: "inherit",
       });
-    }
-    catch {
+    } catch {
       console.log("Hot-reload git directory corrupted, re-cloning...");
       rmSync(hotReloadPath, { force: true, recursive: true });
       cloneHotReload(hotReloadRepo);
     }
-  }
-  else if (!existsSync(`${hotReloadPath}/main.js`)) {
+  } else if (!existsSync(`${hotReloadPath}/main.js`)) {
     cloneHotReload(hotReloadRepo);
   }
 }
@@ -92,8 +94,8 @@ const copyPlugin = {
   name: "copy-to-dev-vault",
   setup(build) {
     build.onEnd(() => {
-      if (!prod && devVaultPath) {
-        copyToDevVault();
+      if (!production && developmentVaultPath) {
+        copyToDevelopmentVault();
       }
     });
   },
@@ -123,20 +125,21 @@ const context = await esbuild.context({
   ],
   format: "cjs",
   logLevel: "info",
-  minify: prod,
+  minify: production,
   outfile: "main.js",
   plugins: [copyPlugin],
-  sourcemap: prod ? false : "inline",
+  sourcemap: production ? false : "inline",
   target: "es2018",
   treeShaking: true,
 });
 
-if (prod) {
+if (production) {
   await context.rebuild();
   process.exit(0);
-}
-else {
-  if (!devVaultPath) {
+} else {
+  if (developmentVaultPath) {
+    ensureHotReloadPlugin();
+  } else {
     console.group("⚠️  Development vault not set ⚠️");
     console.warn("VAULT_ROOT env variable not set ");
     console.warn("files will only build locally");
@@ -144,9 +147,6 @@ else {
       "Create a .env file with VAULT_ROOT to auto-copy to your vault",
     );
     console.groupEnd();
-  }
-  else {
-    ensureHotReloadPlugin();
   }
   await context.watch();
 }

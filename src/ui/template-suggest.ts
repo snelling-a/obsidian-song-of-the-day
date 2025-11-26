@@ -40,8 +40,11 @@ export class TemplateSuggest extends AbstractInputSuggest<TemplateVariable> {
     }
 
     const cursorPos = this.textareaEl.selectionStart;
-    const textBefore = this.textareaEl.value.substring(0, this.triggerStart);
-    const textAfter = this.textareaEl.value.substring(cursorPos);
+    const textBefore = this.textareaEl.value.slice(
+      0,
+      Math.max(0, this.triggerStart),
+    );
+    const textAfter = this.textareaEl.value.slice(Math.max(0, cursorPos));
     const replacement = `{{${variable.name}}}`;
 
     this.textareaEl.value = textBefore + replacement + textAfter;
@@ -56,7 +59,10 @@ export class TemplateSuggest extends AbstractInputSuggest<TemplateVariable> {
   /** @inheritdoc */
   protected getSuggestions(): TemplateVariable[] {
     const cursorPos = this.textareaEl.selectionStart;
-    const textBeforeCursor = this.textareaEl.value.substring(0, cursorPos);
+    const textBeforeCursor = this.textareaEl.value.slice(
+      0,
+      Math.max(0, cursorPos),
+    );
     const lastDoubleBrace = textBeforeCursor.lastIndexOf("{{");
 
     if (lastDoubleBrace === -1) {
@@ -67,7 +73,7 @@ export class TemplateSuggest extends AbstractInputSuggest<TemplateVariable> {
 
     this.triggerStart = lastDoubleBrace;
     const searchQuery = textBeforeCursor
-      .substring(lastDoubleBrace + 2)
+      .slice(Math.max(0, lastDoubleBrace + 2))
       .toLowerCase();
 
     return TEMPLATE_VARIABLES.filter((variable) => {

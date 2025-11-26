@@ -1,10 +1,6 @@
-import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
-
-// Mock obsidian before importing anything that uses it
-vi.mock(import("obsidian"));
-
 import { Scopes } from "@spotify/web-api-ts-sdk";
 import { requestUrl } from "obsidian";
+import { beforeEach, describe, expect, expectTypeOf, it, vi } from "vitest";
 
 import { REDIRECT_URI, SPOTIFY_ACCOUNTS_BASE_URL } from "./constants";
 import { SpotifyService } from "./index";
@@ -140,15 +136,15 @@ describe(SpotifyService, () => {
         mockCodeVerifier,
       );
 
-      const callArgs = mockRequestUrl.mock.calls[0][0];
+      const callArguments = mockRequestUrl.mock.calls[0][0];
 
-      expect(callArgs).toHaveProperty("body");
+      expect(callArguments).toHaveProperty("body");
 
-      const params = new URLSearchParams((callArgs as { body: string }).body);
+      const parameters = new URLSearchParams((callArguments as { body: string }).body);
 
-      expect(params.get("grant_type")).toBe("authorization_code");
-      expect(params.get("client_id")).toBe(mockClientId);
-      expect(params.get("redirect_uri")).toBe(REDIRECT_URI);
+      expect(parameters.get("grant_type")).toBe("authorization_code");
+      expect(parameters.get("client_id")).toBe(mockClientId);
+      expect(parameters.get("redirect_uri")).toBe(REDIRECT_URI);
     });
 
     it("should send authorization code and PKCE verifier in request body", async () => {
@@ -158,14 +154,14 @@ describe(SpotifyService, () => {
         mockCodeVerifier,
       );
 
-      const callArgs = mockRequestUrl.mock.calls[0][0];
+      const callArguments = mockRequestUrl.mock.calls[0][0];
 
-      expect(callArgs).toHaveProperty("body");
+      expect(callArguments).toHaveProperty("body");
 
-      const params = new URLSearchParams((callArgs as { body: string }).body);
+      const parameters = new URLSearchParams((callArguments as { body: string }).body);
 
-      expect(params.get("code")).toBe(mockAuthCode);
-      expect(params.get("code_verifier")).toBe(mockCodeVerifier);
+      expect(parameters.get("code")).toBe(mockAuthCode);
+      expect(parameters.get("code_verifier")).toBe(mockCodeVerifier);
     });
 
     it("should set correct Content-Type header", async () => {

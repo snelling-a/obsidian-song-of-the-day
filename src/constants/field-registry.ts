@@ -1,6 +1,6 @@
+import { Track } from "@spotify/web-api-ts-sdk";
 import SongOfTheDayPlugin from "main";
 import { moment } from "obsidian";
-import { Track } from "src/services/spotify/types";
 
 /**
  * Definition for a frontmatter/template field.
@@ -44,28 +44,28 @@ export const FIELD_REGISTRY: FieldDefinition[] = [
   {
     defaultEnabled: true,
     description: "Track title",
-    getValue: track => track.name,
+    getValue: (track) => track.name,
     key: "title",
     label: "Title",
   },
   {
     defaultEnabled: true,
     description: "Artist name(s), comma-separated",
-    getValue: track => track.artists.map(a => a.name).join(", "),
+    getValue: (track) => track.artists.map((artist) => artist.name).join(", "),
     key: "artist",
     label: "Artist",
   },
   {
     defaultEnabled: true,
     description: "Album name",
-    getValue: track => track.album.name,
+    getValue: (track) => track.album.name,
     key: "album",
     label: "Album",
   },
   {
     defaultEnabled: true,
     description: "Album release date",
-    getValue: track => track.album.release_date,
+    getValue: (track) => track.album.release_date,
     key: "release_date",
     label: "Release date",
   },
@@ -79,28 +79,28 @@ export const FIELD_REGISTRY: FieldDefinition[] = [
   {
     defaultEnabled: true,
     description: "Album cover image URL",
-    getValue: track => track.album.images[0]?.url || "",
+    getValue: (track) => track.album.images[0]?.url || "",
     key: "cover",
     label: "Cover image",
   },
   {
     defaultEnabled: true,
     description: "Spotify track URL",
-    getValue: track => track.external_urls.spotify,
+    getValue: (track) => track.external_urls.spotify,
     key: "spotify_url",
     label: "Spotify URL",
   },
   {
     defaultEnabled: true,
     description: "Spotify track ID",
-    getValue: track => track.id,
+    getValue: (track) => track.id,
     key: "spotify_id",
     label: "Spotify ID",
   },
   {
     defaultEnabled: true,
     description: "Track duration in milliseconds",
-    getValue: track => String(track.duration_ms),
+    getValue: (track) => String(track.duration_ms),
     key: "duration_ms",
     label: "Duration (ms)",
   },
@@ -108,8 +108,8 @@ export const FIELD_REGISTRY: FieldDefinition[] = [
     defaultEnabled: false,
     description: "Track duration in mm:ss format",
     getValue: (track): string => {
-      const minutes = Math.floor(track.duration_ms / 60000);
-      const seconds = Math.floor((track.duration_ms % 60000) / 1000);
+      const minutes = Math.floor(track.duration_ms / 60_000);
+      const seconds = Math.floor((track.duration_ms % 60_000) / 1000);
       const paddedSeconds = seconds.toString().padStart(2, "0");
 
       return `${minutes.toString()}:${paddedSeconds}`;

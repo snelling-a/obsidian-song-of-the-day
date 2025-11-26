@@ -1,5 +1,5 @@
+import { Track } from "@spotify/web-api-ts-sdk";
 import SongOfTheDayPlugin from "main";
-import { Track } from "src/services/spotify/types";
 
 import { FIELD_REGISTRY } from "./field-registry";
 
@@ -31,7 +31,7 @@ export interface TemplateVariable {
  * Generated from FIELD_REGISTRY.
  */
 export const TEMPLATE_VARIABLES: TemplateVariable[] = FIELD_REGISTRY.map(
-  field => ({
+  (field) => ({
     description: field.description,
     getValue: field.getValue,
     name: field.key,

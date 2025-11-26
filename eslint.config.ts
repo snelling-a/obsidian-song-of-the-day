@@ -5,6 +5,7 @@ import vitest from "@vitest/eslint-plugin";
 import jsdoc from "eslint-plugin-jsdoc";
 import obsidianmd from "eslint-plugin-obsidianmd";
 import perfectionist from "eslint-plugin-perfectionist";
+import eslintPluginUnicorn from "eslint-plugin-unicorn";
 import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tseslint from "typescript-eslint";
@@ -33,7 +34,27 @@ const obsidianGlobals = {
 } as const;
 
 export default defineConfig([
-  { ignores: ["main.js", "**/*.js"] },
+  { ignores: ["main.js", "**/*.js", "**/__mocks__/**"] },
+  eslintPluginUnicorn.configs.recommended,
+  {
+    rules: {
+      "unicorn/expiring-todo-comments": "off",
+      "unicorn/no-null": "off",
+      "unicorn/no-useless-switch-case": "off",
+      "unicorn/prevent-abbreviations": [
+        "error",
+        {
+          replacements: {
+            cmd: { command: true },
+            el: false,
+            ev: { event: false },
+            pkg: false,
+            utils: false,
+          },
+        },
+      ],
+    },
+  },
   {
     files: ["**/*.{ts,?js}"],
     ...perfectionist.configs["recommended-natural"],
@@ -50,7 +71,13 @@ export default defineConfig([
   },
   {
     files: ["**/*.{ts,?js}"],
-    ...stylistic.configs.customize({ quotes: "double", semi: true }),
+    ...stylistic.configs.customize({
+      arrowParens: true,
+      braceStyle: "1tbs",
+      quoteProps: "as-needed",
+      quotes: "double",
+      semi: true,
+    }),
   },
   {
     extends: [
@@ -70,11 +97,11 @@ export default defineConfig([
     },
     plugins: { "@stylistic": stylistic, jsdoc },
     rules: {
+      "@stylistic/operator-linebreak": "off",
       "@stylistic/padding-line-between-statements": [
         "error",
         { blankLine: "always", next: "return", prev: "*" },
       ],
-      "@stylistic/quote-props": ["error", "as-needed"],
       "@typescript-eslint/explicit-function-return-type": ["warn"],
       "@typescript-eslint/explicit-member-accessibility": [
         "warn",
@@ -128,6 +155,7 @@ export default defineConfig([
       ],
       "@typescript-eslint/switch-exhaustiveness-check": "error",
       curly: ["error", "all"],
+      "id-length": ["error", { exceptions: ["_", "x"], min: 2 }],
       "jsdoc/match-description": [
         "warn",
         { message: "Use sentence case with proper punctuation and spacing." },
@@ -152,7 +180,13 @@ export default defineConfig([
       ],
     },
   },
-  { files: ["**/*.mjs"], languageOptions: { globals: { ...globals.node } } },
+  {
+    files: ["**/*.mjs"],
+    languageOptions: { globals: { ...globals.node } },
+    rules: {
+      "unicorn/no-process-exit": "off",
+    },
+  },
   {
     files: ["**/*.test.ts", "**/*.spec.ts"],
     plugins: { vitest },
@@ -168,7 +202,7 @@ export default defineConfig([
         "error",
         {
           ignoreTypeOfDescribeName: true,
-          mustMatch: { it: ["^should\\s.*$"] },
+          mustMatch: { it: [String.raw`^should\s.*$`] },
         },
       ],
     },
@@ -220,6 +254,21 @@ export default defineConfig([
     files: ["vitest.config.ts"],
     rules: {
       "import/no-nodejs-modules": "off",
+    },
+  },
+  {
+    extends: [tseslint.configs.disableTypeChecked],
+    files: ["test/fixtures/**/*.ts"],
+    rules: {
+      "@typescript-eslint/explicit-function-return-type": "off",
+      "@typescript-eslint/explicit-member-accessibility": "off",
+      "@typescript-eslint/naming-convention": "off",
+      "@typescript-eslint/no-extraneous-class": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "jsdoc/no-blank-blocks": "off",
+      "jsdoc/tag-lines": "off",
+      "obsidianmd/*": "off",
+      "perfectionist/sort-classes": "off",
     },
   },
 ]);

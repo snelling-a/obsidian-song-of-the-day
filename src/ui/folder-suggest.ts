@@ -21,11 +21,11 @@ export class FolderSuggest extends AbstractInputSuggest<TFolder> {
     const folders: TFolder[] = [];
     const lowerQuery = query.toLowerCase();
 
-    this.app.vault.getAllFolders().forEach((folder: TFolder) => {
+    for (const folder of this.app.vault.getAllFolders()) {
       if (folder.path.toLowerCase().includes(lowerQuery)) {
         folders.push(folder);
       }
-    });
+    }
 
     return folders;
   }

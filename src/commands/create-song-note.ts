@@ -1,6 +1,6 @@
+import { Track } from "@spotify/web-api-ts-sdk";
 import SongOfTheDayPlugin from "main";
 import { normalizePath, Notice, TFile, TFolder } from "obsidian";
-import { Track } from "src/services/spotify/types";
 
 import { FIELD_REGISTRY } from "../constants/field-registry";
 import { TEMPLATE_VARIABLES } from "../constants/template-variables";
@@ -64,8 +64,7 @@ async function addTrackToPlaylist(
     }
 
     new Notice("Added to playlist");
-  }
-  catch (error: unknown) {
+  } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     new Notice(`Failed to add to playlist: ${message}`);
     console.error("Failed to add track to playlist:", error);
@@ -118,8 +117,7 @@ async function createSongNote(
       if (!folder || !(folder instanceof TFolder)) {
         try {
           await plugin.app.vault.createFolder(folderPath);
-        }
-        catch (error) {
+        } catch (error) {
           // Folder might already exist with different casing on case-insensitive filesystems
           if (
             error instanceof Error
@@ -143,12 +141,10 @@ async function createSongNote(
       if (plugin.settings.playlistId) {
         await addTrackToPlaylist(plugin, service, track);
       }
-    }
-    finally {
+    } finally {
       loadingNotice.hide();
     }
-  }
-  catch (error: unknown) {
+  } catch (error: unknown) {
     const message = error instanceof Error ? error.message : String(error);
     new Notice(`Error: ${message}`);
     console.error("Song of the Day error:", error);
@@ -163,7 +159,7 @@ function generateNoteBody(track: Track, plugin: SongOfTheDayPlugin): string {
   let body = plugin.settings.noteTemplate;
 
   for (const variable of TEMPLATE_VARIABLES) {
-    const pattern = new RegExp(`\\{\\{${variable.name}\\}\\}`, "g");
+    const pattern = new RegExp(String.raw`\{\{${variable.name}\}\}`, "g");
     const value = variable.getValue(track, plugin);
     body = body.replace(pattern, value);
   }

@@ -46,9 +46,9 @@ export class SpotifyInputModal extends Modal {
           .onChange((value) => {
             this.result = value;
           });
-        text.inputEl.addEventListener("keydown", (e: KeyboardEvent) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
+        text.inputEl.addEventListener("keydown", (ev: KeyboardEvent) => {
+          if (ev.key === "Enter") {
+            ev.preventDefault();
             this.submit();
           }
         });
@@ -58,16 +58,16 @@ export class SpotifyInputModal extends Modal {
       });
 
     new Setting(contentEl)
-      .addButton(btn =>
-        btn
+      .addButton((component) =>
+        component
           .setButtonText("Create")
           .setCta()
           .onClick(() => {
             this.submit();
           }),
       )
-      .addButton(btn =>
-        btn.setButtonText("Cancel").onClick(() => {
+      .addButton((component) =>
+        component.setButtonText("Cancel").onClick(() => {
           this.close();
         }),
       );
@@ -103,8 +103,7 @@ export class SpotifyInputModal extends Modal {
     try {
       this.onSubmit(this.result.trim());
       this.close();
-    }
-    catch (error) {
+    } catch (error) {
       const message
         = error instanceof Error ? error.message : "An error occurred";
       this.showError(message);

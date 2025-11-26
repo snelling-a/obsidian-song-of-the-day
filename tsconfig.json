@@ -8,7 +8,7 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "isolatedModules": true,
-    "lib": ["DOM", "ES5", "ES6", "ES7"],
+    "lib": ["DOM", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -19,9 +19,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES6",
+    "target": "ESNext",
     "types": ["obsidian-typings"]
   },
-  "exclude": ["node_modules", "dist"],
+  "exclude": ["node_modules", "dist", "test/__mocks__"],
   "include": ["**/*.ts", "eslint.config.ts"]
 }

@@ -33,14 +33,18 @@ export function getNoteNameCasingLabel(casing: NoteNameCasing): string {
   const example = "I Would Die 4 U";
 
   switch (casing) {
-    case NOTE_NAME_CASING.KEBAB_CASE:
+    case NOTE_NAME_CASING.KEBAB_CASE: {
       return `kebab-case (${applyCasing(example, casing)})`;
-    case NOTE_NAME_CASING.ORIGINAL:
+    }
+    case NOTE_NAME_CASING.ORIGINAL: {
       return `Original (${example})`;
-    case NOTE_NAME_CASING.SNAKE_CASE:
+    }
+    case NOTE_NAME_CASING.SNAKE_CASE: {
       return `snake_case (${applyCasing(example, casing)})`;
-    default:
+    }
+    default: {
       return casing;
+    }
   }
 }
 
@@ -49,19 +53,25 @@ export function getNoteNameCasingLabel(casing: NoteNameCasing): string {
  * @param structure The structure type
  * @returns A descriptive label for the structure
  */
-export function getNoteNameStructureLabel(structure: NoteNameStructure): string {
+export function getNoteNameStructureLabel(
+  structure: NoteNameStructure,
+): string {
   const exampleSong = "I Would Die 4 U";
   const exampleArtist = "Prince";
 
   switch (structure) {
-    case NOTE_NAME_STRUCTURE.ARTIST_SONG:
+    case NOTE_NAME_STRUCTURE.ARTIST_SONG: {
       return `Artist - Song (${exampleArtist} - ${exampleSong})`;
-    case NOTE_NAME_STRUCTURE.SONG_ARTIST:
+    }
+    case NOTE_NAME_STRUCTURE.SONG_ARTIST: {
       return `Song - Artist (${exampleSong} - ${exampleArtist})`;
-    case NOTE_NAME_STRUCTURE.SONG_ONLY:
+    }
+    case NOTE_NAME_STRUCTURE.SONG_ONLY: {
       return `Song only (${exampleSong})`;
-    default:
+    }
+    default: {
       return structure;
+    }
   }
 }
 
@@ -73,19 +83,22 @@ export function getNoteNameStructureLabel(structure: NoteNameStructure): string 
  */
 function applyCasing(noteName: string, casing: NoteNameCasing): string {
   switch (casing) {
-    case NOTE_NAME_CASING.KEBAB_CASE:
+    case NOTE_NAME_CASING.KEBAB_CASE: {
       return noteName
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-    case NOTE_NAME_CASING.SNAKE_CASE:
+        .replaceAll(/[^a-z0-9]+/g, "-")
+        .replaceAll(/^-+|-+$/g, "");
+    }
+    case NOTE_NAME_CASING.SNAKE_CASE: {
       return noteName
         .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "_")
-        .replace(/^_+|_+$/g, "");
+        .replaceAll(/[^a-z0-9]+/g, "_")
+        .replaceAll(/^_+|_+$/g, "");
+    }
     case NOTE_NAME_CASING.ORIGINAL:
-    default:
+    default: {
       return noteName.trim();
+    }
   }
 }
 
@@ -102,12 +115,15 @@ function buildNoteNameStructure(
   structure: NoteNameStructure,
 ): string {
   switch (structure) {
-    case NOTE_NAME_STRUCTURE.ARTIST_SONG:
+    case NOTE_NAME_STRUCTURE.ARTIST_SONG: {
       return `${artistName} - ${songTitle}`;
-    case NOTE_NAME_STRUCTURE.SONG_ARTIST:
+    }
+    case NOTE_NAME_STRUCTURE.SONG_ARTIST: {
       return `${songTitle} - ${artistName}`;
+    }
     case NOTE_NAME_STRUCTURE.SONG_ONLY:
-    default:
+    default: {
       return songTitle;
+    }
   }
 }
