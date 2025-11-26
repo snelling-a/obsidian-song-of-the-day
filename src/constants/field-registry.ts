@@ -1,6 +1,6 @@
+import { Track } from "@spotify/web-api-ts-sdk";
 import SongOfTheDayPlugin from "main";
 import { moment } from "obsidian";
-import { Track } from "src/services/spotify/types";
 
 /**
  * Definition for a frontmatter/template field.

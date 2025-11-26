@@ -1,6 +1,6 @@
+import { Track } from "@spotify/web-api-ts-sdk";
 import SongOfTheDayPlugin from "main";
 import { normalizePath, Notice, TFile, TFolder } from "obsidian";
-import { Track } from "src/services/spotify/types";
 
 import { FIELD_REGISTRY } from "../constants/field-registry";
 import { TEMPLATE_VARIABLES } from "../constants/template-variables";

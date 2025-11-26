@@ -1,5 +1,5 @@
+import { Track } from "@spotify/web-api-ts-sdk";
 import SongOfTheDayPlugin from "main";
-import { Track } from "src/services/spotify/types";
 
 import { FIELD_REGISTRY } from "./field-registry";
 
