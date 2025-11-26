@@ -257,7 +257,8 @@ export default defineConfig([
     },
   },
   {
-    files: ["**/__mocks__/**/*.ts", "test/fixtures/**/*.ts"],
+    extends: [tseslint.configs.disableTypeChecked],
+    files: ["test/fixtures/**/*.ts"],
     rules: {
       "@typescript-eslint/explicit-function-return-type": "off",
       "@typescript-eslint/explicit-member-accessibility": "off",

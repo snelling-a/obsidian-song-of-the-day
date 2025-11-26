@@ -8,7 +8,7 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "isolatedModules": true,
-    "lib": ["DOM", "ES2021"],
+    "lib": ["DOM", "ESNext"],
     "module": "ESNext",
     "moduleResolution": "node",
     "noImplicitAny": true,
@@ -19,7 +19,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
-    "target": "ES6",
+    "target": "ESNext",
     "types": ["obsidian-typings"]
   },
   "exclude": ["node_modules", "dist", "test/__mocks__"],
