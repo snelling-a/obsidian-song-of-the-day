@@ -75,8 +75,8 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    */
   private createApiCredentialsHelp(containerEl: HTMLElement): void {
     if (
-      this.plugin.settings.spotifyClientId
-      && this.plugin.settings.spotifyClientSecret
+      this.plugin.settings.spotifyClientId &&
+      this.plugin.settings.spotifyClientSecret
     ) {
       return;
     }
@@ -149,7 +149,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   private createDateFormatSetting(containerEl: HTMLElement): void {
     const setting = new Setting(containerEl).setName("Date format");
 
-    setting.descEl.appendChild(
+    setting.descEl.append(
       createFragment((el) => {
         el.appendText("For more syntax, refer to ");
         el.createEl("a", {
@@ -255,8 +255,8 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
         container
           .setValue(this.plugin.settings.noteNameCasing)
           .onChange(async (value) => {
-            this.plugin.settings.noteNameCasing
-              = value as (typeof NOTE_NAME_CASING)[keyof typeof NOTE_NAME_CASING];
+            this.plugin.settings.noteNameCasing =
+              value as (typeof NOTE_NAME_CASING)[keyof typeof NOTE_NAME_CASING];
             await this.plugin.saveSettings();
           });
       });
@@ -278,8 +278,8 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
         dropdown
           .setValue(this.plugin.settings.noteNameStructure)
           .onChange(async (value) => {
-            this.plugin.settings.noteNameStructure
-              = value as (typeof NOTE_NAME_STRUCTURE)[keyof typeof NOTE_NAME_STRUCTURE];
+            this.plugin.settings.noteNameStructure =
+              value as (typeof NOTE_NAME_STRUCTURE)[keyof typeof NOTE_NAME_STRUCTURE];
             await this.plugin.saveSettings();
           });
       });
@@ -356,8 +356,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
               if (match) {
                 playlistId = match[1];
               }
-            }
-            else if (trimmedValue.startsWith("spotify:playlist:")) {
+            } else if (trimmedValue.startsWith("spotify:playlist:")) {
               playlistId = trimmedValue.replace("spotify:playlist:", "");
             }
 
@@ -406,9 +405,9 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
           errorEl = null;
 
           if (
-            this.plugin.settings.spotifyClientId
-            && this.plugin.settings.spotifyClientSecret
-            && this.credentialsHelpEl
+            this.plugin.settings.spotifyClientId &&
+            this.plugin.settings.spotifyClientSecret &&
+            this.credentialsHelpEl
           ) {
             this.credentialsHelpEl.remove();
             this.credentialsHelpEl = null;
@@ -461,9 +460,9 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
           errorEl = null;
 
           if (
-            this.plugin.settings.spotifyClientId
-            && this.plugin.settings.spotifyClientSecret
-            && this.credentialsHelpEl
+            this.plugin.settings.spotifyClientId &&
+            this.plugin.settings.spotifyClientSecret &&
+            this.credentialsHelpEl
           ) {
             this.credentialsHelpEl.remove();
             this.credentialsHelpEl = null;
@@ -507,8 +506,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       new OAuthCallbackModal(this.app, (callbackUrl) => {
         void this.handleOAuthCallback(callbackUrl);
       }).open();
-    }
-    catch (error: unknown) {
+    } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       console.error("Authentication error:", error);
       new Notice(`Authentication failed: ${message}`);
@@ -553,8 +551,8 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
 
       this.plugin.settings.spotifyAccessToken = tokens.accessToken;
       this.plugin.settings.spotifyRefreshToken = tokens.refreshToken;
-      this.plugin.settings.spotifyTokenExpiry
-        = Date.now() + tokens.expiresIn * 1000;
+      this.plugin.settings.spotifyTokenExpiry =
+        Date.now() + tokens.expiresIn * 1000;
 
       await this.plugin.saveSettings();
       clearCachedService();
@@ -562,12 +560,10 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       new Notice("Successfully authenticated with Spotify!");
 
       this.display();
-    }
-    catch (error: unknown) {
+    } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       new Notice(`Failed to complete authentication: ${message}`);
-    }
-    finally {
+    } finally {
       this.codeVerifier = null;
       this.oauthState = null;
     }

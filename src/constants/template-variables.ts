@@ -31,7 +31,7 @@ export interface TemplateVariable {
  * Generated from FIELD_REGISTRY.
  */
 export const TEMPLATE_VARIABLES: TemplateVariable[] = FIELD_REGISTRY.map(
-  field => ({
+  (field) => ({
     description: field.description,
     getValue: field.getValue,
     name: field.key,

@@ -12,7 +12,7 @@ let cachedService: null | SpotifyService = null;
 let storedCredentials:
   | null
   | undefined
-  | { clientId: string; clientSecret: string } = undefined;
+  | { clientId: string; clientSecret: string };
 
 /**
  * Clears the cached Spotify service instance.
@@ -34,8 +34,8 @@ export function getOrCreateSpotifyService(
   plugin: SongOfTheDayPlugin,
 ): null | SpotifyService {
   if (
-    !plugin.settings.spotifyClientId
-    || !plugin.settings.spotifyClientSecret
+    !plugin.settings.spotifyClientId ||
+    !plugin.settings.spotifyClientSecret
   ) {
     new Notice("Configure Spotify API credentials in settings");
     plugin.app.setting.open();
@@ -45,9 +45,9 @@ export function getOrCreateSpotifyService(
   }
 
   if (
-    cachedService
-    && storedCredentials?.clientId === plugin.settings.spotifyClientId
-    && storedCredentials.clientSecret === plugin.settings.spotifyClientSecret
+    cachedService &&
+    storedCredentials?.clientId === plugin.settings.spotifyClientId &&
+    storedCredentials.clientSecret === plugin.settings.spotifyClientSecret
   ) {
     return cachedService;
   }
@@ -63,9 +63,9 @@ export function getOrCreateSpotifyService(
   );
 
   if (
-    plugin.settings.spotifyAccessToken
-    && plugin.settings.spotifyRefreshToken
-    && plugin.settings.spotifyTokenExpiry
+    plugin.settings.spotifyAccessToken &&
+    plugin.settings.spotifyRefreshToken &&
+    plugin.settings.spotifyTokenExpiry
   ) {
     service.initializeUserApi(
       plugin.settings.spotifyAccessToken,
@@ -74,13 +74,13 @@ export function getOrCreateSpotifyService(
       async (tokens) => {
         plugin.settings.spotifyAccessToken = tokens.accessToken;
         plugin.settings.spotifyRefreshToken = tokens.refreshToken;
-        plugin.settings.spotifyTokenExpiry
-          = Date.now() + tokens.expiresIn * 1000;
+        plugin.settings.spotifyTokenExpiry =
+          Date.now() + tokens.expiresIn * 1000;
         try {
           await plugin.saveSettings();
-        }
-        catch (error: unknown) {
-          const message = error instanceof Error ? error.message : String(error);
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error ? error.message : String(error);
           console.error("Failed to save refreshed tokens:", message);
           new Notice("Failed to save Spotify tokens");
         }

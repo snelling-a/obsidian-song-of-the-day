@@ -37,30 +37,30 @@ export class OAuthCallbackModal extends Modal {
     new Setting(contentEl)
       .setName("Callback URL")
       .setDesc("Paste the full URL from your browser after authorization.")
-      .addText((text) => {
-        text
+      .addText((component) => {
+        component
           .setPlaceholder(REDIRECT_URI)
           .setValue(this.callbackUrl)
           .onChange((value) => {
             this.callbackUrl = value.trim();
           });
-        text.inputEl.setCssProps({
+        component.inputEl.setCssProps({
           width: "100%",
         });
 
         setTimeout(() => {
-          text.inputEl.focus();
+          component.inputEl.focus();
         }, 100);
       });
 
     new Setting(contentEl)
-      .addButton((btn) => {
-        btn.setButtonText("Cancel").onClick(() => {
+      .addButton((component) => {
+        component.setButtonText("Cancel").onClick(() => {
           this.close();
         });
       })
-      .addButton((btn) => {
-        btn
+      .addButton((component) => {
+        component
           .setButtonText("Submit")
           .setCta()
           .onClick(() => {

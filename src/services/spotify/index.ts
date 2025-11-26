@@ -56,7 +56,7 @@ export class SpotifyService {
     code: string,
     codeVerifier: string,
   ): Promise<OAuthTokens> {
-    const params = new URLSearchParams({
+    const parameters = new URLSearchParams({
       client_id: clientId,
       code,
       code_verifier: codeVerifier,
@@ -65,7 +65,7 @@ export class SpotifyService {
     });
 
     const response = await requestUrl({
-      body: params.toString(),
+      body: parameters.toString(),
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       method: "POST",
       url: `${SPOTIFY_ACCOUNTS_BASE_URL}/api/token`,
@@ -77,15 +77,15 @@ export class SpotifyService {
     };
 
     if (
-      data.error
-      || !data.access_token
-      || !data.expires_in
-      || !data.refresh_token
+      data.error ||
+      !data.access_token ||
+      !data.expires_in ||
+      !data.refresh_token
     ) {
-      const errorMessage
-        = data.error_description
-          ?? data.error
-          ?? `status ${String(response.status)}`;
+      const errorMessage =
+        data.error_description ??
+        data.error ??
+        `status ${String(response.status)}`;
       throw new Error(`Failed to exchange authorization code: ${errorMessage}`);
     }
 
@@ -105,11 +105,11 @@ export class SpotifyService {
     clientId: string,
   ): Promise<{ codeVerifier: string; state: string; url: string }> {
     const codeVerifier = SpotifyService.generateCodeVerifier();
-    const codeChallenge
-      = await SpotifyService.generateCodeChallenge(codeVerifier);
+    const codeChallenge =
+      await SpotifyService.generateCodeChallenge(codeVerifier);
     const state = SpotifyService.generateRandomString(16);
 
-    const params = new URLSearchParams({
+    const parameters = new URLSearchParams({
       client_id: clientId,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
@@ -122,7 +122,7 @@ export class SpotifyService {
     return {
       codeVerifier,
       state,
-      url: `${SPOTIFY_ACCOUNTS_BASE_URL}/authorize?${params.toString()}`,
+      url: `${SPOTIFY_ACCOUNTS_BASE_URL}/authorize?${parameters.toString()}`,
     };
   }
 
@@ -139,10 +139,10 @@ export class SpotifyService {
     const hash = await crypto.subtle.digest("SHA-256", data);
     const bytes = new Uint8Array(hash);
 
-    return btoa(String.fromCharCode(...bytes))
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=/g, "");
+    return btoa(String.fromCodePoint(...bytes))
+      .replaceAll("+", "-")
+      .replaceAll("/", "_")
+      .replaceAll("=", "");
   }
 
   /**
@@ -159,13 +159,11 @@ export class SpotifyService {
    * @returns A random alphanumeric string
    */
   private static generateRandomString(length: number): string {
-    const possible
-      = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const possible =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     const values = crypto.getRandomValues(new Uint8Array(length));
 
-    return Array.from(values)
-      .map(x => possible[x % possible.length])
-      .join("");
+    return [...values].map((x) => possible[x % possible.length]).join("");
   }
 
   /**
@@ -186,8 +184,7 @@ export class SpotifyService {
 
     try {
       await this.userApi.playlists.addItemsToPlaylist(playlistId, [trackUri]);
-    }
-    catch (error: unknown) {
+    } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to add track to playlist: ${message}`);
     }
@@ -230,8 +227,7 @@ export class SpotifyService {
   public async getTrack(trackId: string): Promise<Track> {
     try {
       return await this.api.tracks.get(trackId);
-    }
-    catch (error: unknown) {
+    } catch (error: unknown) {
       const message = error instanceof Error ? error.message : String(error);
       throw new Error(`Failed to fetch track data: ${message}`);
     }
@@ -285,11 +281,9 @@ export class SpotifyService {
     let url: string;
     if (typeof input === "string") {
       url = input;
-    }
-    else if (input instanceof URL) {
+    } else if (input instanceof URL) {
       url = input.href;
-    }
-    else {
+    } else {
       url = input.url;
     }
 
@@ -300,7 +294,7 @@ export class SpotifyService {
       url,
     });
 
-    return new Response(JSON.stringify(response.json), {
+    return Response.json(response.json, {
       headers: response.headers,
       status: response.status,
     });
@@ -321,13 +315,11 @@ export class SpotifyService {
     if (this.isTokenExpired()) {
       if (this.refreshPromise) {
         await this.refreshPromise;
-      }
-      else {
+      } else {
         this.refreshPromise = this.refreshAccessToken();
         try {
           await this.refreshPromise;
-        }
-        finally {
+        } finally {
           this.refreshPromise = null;
         }
       }
@@ -358,14 +350,14 @@ export class SpotifyService {
       throw new Error("No refresh token available");
     }
 
-    const params = new URLSearchParams({
+    const parameters = new URLSearchParams({
       client_id: this.clientId,
       grant_type: "refresh_token",
       refresh_token: this.refreshToken,
     });
 
     const response = await requestUrl({
-      body: params.toString(),
+      body: parameters.toString(),
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       method: "POST",
       url: `${SPOTIFY_ACCOUNTS_BASE_URL}/api/token`,
@@ -377,10 +369,10 @@ export class SpotifyService {
     };
 
     if (data.error || !data.access_token || !data.expires_in) {
-      const errorMessage
-        = data.error_description
-          ?? data.error
-          ?? `status ${String(response.status)}`;
+      const errorMessage =
+        data.error_description ??
+        data.error ??
+        `status ${String(response.status)}`;
       throw new Error(`Failed to refresh access token: ${errorMessage}`);
     }
 

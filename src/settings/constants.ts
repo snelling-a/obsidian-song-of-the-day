@@ -26,14 +26,12 @@ export const MOMENT_FORMAT_DOCS_URL
  * @returns Default frontmatter fields configuration
  */
 function getDefaultFrontmatterFields(): FrontmatterFields {
-  return FIELD_REGISTRY.reduce<FrontmatterFields>(
-    (acc, field) => {
-      acc[field.key] = field.defaultEnabled;
+  const fields: FrontmatterFields = {};
+  for (const field of FIELD_REGISTRY) {
+    fields[field.key] = field.defaultEnabled;
+  }
 
-      return acc;
-    },
-    {},
-  );
+  return fields;
 }
 
 export const DEFAULT_SETTINGS: SongOfTheDaySettings = {

@@ -202,7 +202,7 @@ export default defineConfig([
         "error",
         {
           ignoreTypeOfDescribeName: true,
-          mustMatch: { it: ["^should\\s.*$"] },
+          mustMatch: { it: [String.raw`^should\s.*$`] },
         },
       ],
     },
