@@ -20,7 +20,7 @@ export default defineConfig({
         "src/utils/obsidian/plugins",
       ],
       include: ["src/**/*.ts"],
-      reporter: ["text", "json", "html"],
+      reporter: ["text", "json", "html", "lcov"],
     },
     environment: "jsdom",
     globals: true,
