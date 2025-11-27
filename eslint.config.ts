@@ -34,7 +34,7 @@ const obsidianGlobals = {
 } as const;
 
 export default defineConfig([
-  { ignores: ["main.js", "**/*.js", "**/__mocks__/**"] },
+  { ignores: ["main.js", "**/*.js", "**/__mocks__/**", "test/fixtures/**"] },
   eslintPluginUnicorn.configs.recommended,
   {
     rules: {
@@ -252,23 +252,10 @@ export default defineConfig([
   },
   {
     files: ["vitest.config.ts"],
-    rules: {
-      "import/no-nodejs-modules": "off",
-    },
+    rules: { "import/no-nodejs-modules": "off" },
   },
   {
-    extends: [tseslint.configs.disableTypeChecked],
-    files: ["test/fixtures/**/*.ts"],
-    rules: {
-      "@typescript-eslint/explicit-function-return-type": "off",
-      "@typescript-eslint/explicit-member-accessibility": "off",
-      "@typescript-eslint/naming-convention": "off",
-      "@typescript-eslint/no-extraneous-class": "off",
-      "@typescript-eslint/no-unused-vars": "off",
-      "jsdoc/no-blank-blocks": "off",
-      "jsdoc/tag-lines": "off",
-      "obsidianmd/*": "off",
-      "perfectionist/sort-classes": "off",
-    },
+    files: ["package.json"],
+    rules: { "depend/ban-dependencies": ["error", { allowed: ["moment"] }] },
   },
 ]);
