@@ -54,7 +54,7 @@ describe("field registry", () => {
     let field: FieldDefinition | undefined;
 
     beforeEach(() => {
-      mockTrack = { ...mockSpotifyTrack };
+      mockTrack = structuredClone(mockSpotifyTrack);
       plugin = createMockPlugin();
     });
 
