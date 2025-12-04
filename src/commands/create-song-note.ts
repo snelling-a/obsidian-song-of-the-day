@@ -120,8 +120,8 @@ async function createSongNote(
         } catch (error) {
           // Folder might already exist with different casing on case-insensitive filesystems
           if (
-            error instanceof Error
-            && !error.message.includes("Folder already exists")
+            error instanceof Error &&
+            !error.message.includes("Folder already exists")
           ) {
             throw error;
           }
