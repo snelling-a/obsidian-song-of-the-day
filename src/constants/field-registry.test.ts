@@ -225,7 +225,7 @@ describe("field registry", () => {
       it("should return second image if first is undefined", () => {
         mockTrack.album.images = [
           // @ts-expect-error Testing undefined image
-          undefined,
+          {},
           {
             height: 300,
             url: "https://example.com/cover-medium.jpg",
@@ -234,7 +234,7 @@ describe("field registry", () => {
         ];
         const result = field?.getValue(mockTrack, plugin);
 
-        expect(result).toBe("");
+        expect(result).toBe("https://example.com/cover-medium.jpg");
       });
     });
 

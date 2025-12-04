@@ -79,7 +79,7 @@ export const FIELD_REGISTRY: FieldDefinition[] = [
   {
     defaultEnabled: true,
     description: "Album cover image URL",
-    getValue: (track) => track.album.images[0]?.url || "",
+    getValue: (track) => track.album.images.find((img) => img.url)?.url ?? "",
     key: "cover",
     label: "Cover image",
   },
