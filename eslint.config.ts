@@ -61,8 +61,9 @@ export default defineConfig([
   },
   // @ts-expect-error - obsidianmd config types are incompatible with eslint config types
   ...obsidianmd.configs.recommended,
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access -- esm module without types
-  eslintComments.recommended,
+  // HACK: ObsidianReviewBot marked this as Unused eslint-disable directive
+  // @ts-expect-error - esm module without types
+  (eslintComments as unknown).recommended,
   {
     files: ["**/*.{ts,?js}"],
     rules: {
@@ -176,6 +177,12 @@ export default defineConfig([
           acronyms: ["API", "ID", "URI", "URL"],
           allowAutoFix: true,
           brands: ["Spotify"],
+          ignoreRegex: [
+            "Client ID",
+            "format reference",
+            "Music/Song of the Day",
+            "spotify:",
+          ],
         },
       ],
     },
