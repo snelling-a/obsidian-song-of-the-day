@@ -177,6 +177,12 @@ export default defineConfig([
           acronyms: ["API", "ID", "URI", "URL"],
           allowAutoFix: true,
           brands: ["Spotify"],
+          ignoreRegex: [
+            "Client ID",
+            "format reference",
+            "Music/Song of the Day",
+            "spotify:",
+          ],
         },
       ],
     },
