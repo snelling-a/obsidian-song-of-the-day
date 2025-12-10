@@ -6,16 +6,39 @@ updates:
       interval: daily
     open-pull-requests-limit: 10
     groups:
-      development-dependencies:
-        dependency-type: development
-        update-types:
-          - minor
-          - patch
-      production-dependencies:
-        dependency-type: production
-        update-types:
-          - minor
-          - patch
+      eslint:
+        patterns:
+          - "eslint"
+          - "eslint-*"
+          - "@typescript-eslint/*"
+      types:
+        patterns:
+          - "@types/*"
+      obsidian:
+        patterns:
+          - "obsidian"
+          - "@codemirror/*"
+      typescript:
+        patterns:
+          - "typescript"
+      vitest:
+        patterns:
+          - "vitest"
+          - "@vitest/*"
+      testing-library:
+        patterns:
+          - "@testing-library/*"
+      build-tools:
+        patterns:
+          - "esbuild"
+          - "rollup"
+          - "vite"
+      lint-staged:
+        patterns:
+          - "lint-staged"
+      prettier:
+        patterns:
+          - "prettier"
   - package-ecosystem: github-actions
     directory: /
     schedule:
