@@ -201,10 +201,13 @@ export default defineConfig([
       ...vitest.configs.all.rules,
       "@typescript-eslint/naming-convention": "off",
       "@typescript-eslint/no-unsafe-assignment": "off",
+      "@typescript-eslint/unbound-method": "off",
       "jsdoc/require-jsdoc": "off",
+      "unicorn/no-useless-undefined": "off",
       "vitest/no-hooks": "off",
       "vitest/prefer-called-times": "off",
       "vitest/prefer-expect-assertions": "off",
+      "vitest/require-mock-type-parameters": "off",
       "vitest/valid-title": [
         "error",
         {

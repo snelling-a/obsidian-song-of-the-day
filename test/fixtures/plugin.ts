@@ -1,12 +1,25 @@
 import SongOfTheDayPlugin from "main";
+import { App } from "obsidian";
 import { DEFAULT_SETTINGS } from "src/settings/constants";
+import { SongOfTheDaySettings } from "src/settings/types";
+
+/**
+ * Options for customizing the mock plugin.
+ */
+export type MockPluginOptions = Partial<SongOfTheDaySettings>;
 
 /**
  * Creates a mock plugin instance for testing.
- * Contains minimal settings configuration.
+ * @param options Optional settings overrides
  */
-export const createMockPlugin = (): SongOfTheDayPlugin => {
+export function createMockPlugin(
+  options: MockPluginOptions = {},
+): SongOfTheDayPlugin {
   return {
-    settings: DEFAULT_SETTINGS,
-  } as SongOfTheDayPlugin;
-};
+    addCommand: () => undefined,
+    app: new App(),
+    getSpotifyService: () => null,
+    saveSettings: async () => undefined,
+    settings: { ...DEFAULT_SETTINGS, ...options },
+  } as unknown as SongOfTheDayPlugin;
+}

@@ -15,8 +15,8 @@ export default defineConfig({
       exclude: [
         "**/modals/**",
         "src/main.ts",
-        "src/settings/MetadataTypesSettingTab.ts",
-        "src/settings/pages/",
+        "src/settings/index.ts",
+        "src/ui/",
         "src/utils/obsidian/plugins",
       ],
       include: ["src/**/*.ts"],
