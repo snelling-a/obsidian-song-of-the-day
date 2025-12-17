@@ -18,7 +18,7 @@ updates:
       obsidian:
         patterns:
           - "obsidian"
-          - "@codemirror/*"
+          - "obsidian-typings"
       typescript:
         patterns:
           - "typescript"
