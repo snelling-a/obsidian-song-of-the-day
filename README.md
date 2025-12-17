@@ -1,5 +1,7 @@
 # Song of the Day
 
+[![codecov](https://codecov.io/github/snelling-a/obsidian-song-of-the-day/graph/badge.svg?token=WPMZZIDPVF)](https://codecov.io/github/snelling-a/obsidian-song-of-the-day)
+
 An Obsidian plugin that lets you create song notes from Spotify links with metadata and album art.
 
 ## Features
@@ -23,13 +25,13 @@ To use this plugin, you need to create a Spotify application to get API credenti
 
    ![Spotify Dashboard Login](.github/screenshots/spotify-dashboard-login.png)
 
-2. **Create a new app**
+1. **Create a new app**
 
    Click the "Create app" button.
 
    ![Create App Button](.github/screenshots/spotify-create-app-button.png)
 
-3. **Fill out the app form**
+1. **Fill out the app form**
    - **App name**: Choose any name (e.g., "Obsidian Song of the Day")
    - **App description**: Add a description (e.g., "For Obsidian plugin")
    - **Redirect URIs**: Enter `https://example.com/callback` (required for OAuth to work)
@@ -38,7 +40,7 @@ To use this plugin, you need to create a Spotify application to get API credenti
 
    ![App Form](.github/screenshots/spotify-app-form.png)
 
-4. **Copy your credentials**
+1. **Copy your credentials**
 
    After creating the app, click "Settings" to view your credentials. You'll need:
    - **Client ID**: Visible on the settings page
@@ -46,7 +48,7 @@ To use this plugin, you need to create a Spotify application to get API credenti
 
    ![Credentials](.github/screenshots/spotify-credentials.png)
 
-5. **Add credentials to Obsidian**
+1. **Add credentials to Obsidian**
 
    Open Obsidian Settings, go to the "Song of the Day" plugin settings, and paste your Client ID and Client Secret.
 
