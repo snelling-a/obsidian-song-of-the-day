@@ -9,6 +9,7 @@ updates:
       eslint:
         patterns:
           - "eslint"
+          - "@eslint"
           - "eslint-*"
           - "@typescript-eslint/*"
           - "typescript-eslint"
@@ -18,7 +19,7 @@ updates:
       obsidian:
         patterns:
           - "obsidian"
-          - "@codemirror/*"
+          - "obsidian-typings"
       typescript:
         patterns:
           - "typescript"
