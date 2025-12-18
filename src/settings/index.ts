@@ -7,6 +7,7 @@ import { CSS_CLASSES, CSS_VARIABLES } from "src/ui/css";
 import { FolderSuggest } from "src/ui/folder-suggest";
 import { OAuthCallbackModal } from "src/ui/oauth-callback-modal";
 import { TemplateSuggest } from "src/ui/template-suggest";
+import { createTemplateVariablesFragment } from "src/ui/template-variables-fragment";
 import {
   getNoteNameCasingLabel,
   getNoteNameStructureLabel,
@@ -19,7 +20,6 @@ import {
   NOTE_NAME_STRUCTURE,
   SPOTIFY_API_DOCS_URL,
 } from "./constants";
-import { createTemplateVariablesFragment } from "./utils";
 
 /** Settings tab for the Song of the Day plugin. */
 export class SongOfTheDaySettingTab extends PluginSettingTab {

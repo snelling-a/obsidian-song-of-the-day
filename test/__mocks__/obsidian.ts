@@ -220,15 +220,19 @@ export class Modal {
  *
  * @see https://docs.obsidian.md/Reference/TypeScript+API/Notice
  */
-export class Notice {
-  /**
-   *
-   */
-  constructor(
-    public message: string,
-    public duration?: number,
-  ) {}
-}
+export const Notice = vi.fn(function (
+  this: { hide: ReturnType<typeof vi.fn>; message: string; duration?: number },
+  message: string,
+  duration?: number,
+) {
+  this.message = message;
+  this.duration = duration;
+  this.hide = vi.fn();
+}) as unknown as new (message: string, duration?: number) => {
+  duration?: number;
+  hide: ReturnType<typeof vi.fn>;
+  message: string;
+};
 
 /**
  * Mock implementation of Obsidian's Plugin class.
@@ -321,6 +325,6 @@ export class Setting {
  *
  * @see https://docs.obsidian.md/Reference/TypeScript+API/normalizePath
  */
-export const normalizePath = vi
-  .fn()
-  .mockImplementation((path: string) => path.replace(/\\/g, "/"));
+export function normalizePath(path: string): string {
+  return path.replace(/\\/g, "/");
+}

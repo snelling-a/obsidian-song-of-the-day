@@ -9,6 +9,11 @@ import { requestUrl } from "obsidian";
 import { REDIRECT_URI, SPOTIFY_ACCOUNTS_BASE_URL } from "./constants";
 
 /**
+ * Callback for when tokens are refreshed
+ */
+export type TokenRefreshCallback = (tokens: OAuthTokens) => Promise<void>;
+
+/**
  * OAuth token data
  */
 interface OAuthTokens {
@@ -16,11 +21,6 @@ interface OAuthTokens {
   expiresIn: number;
   refreshToken: string;
 }
-
-/**
- * Callback for when tokens are refreshed
- */
-type TokenRefreshCallback = (tokens: OAuthTokens) => Promise<void>;
 
 /** Spotify API service for fetching track data */
 export class SpotifyService {
