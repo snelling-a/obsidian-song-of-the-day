@@ -10,6 +10,7 @@ updates:
         patterns:
           - "eslint"
           - "@eslint"
+          - "@eslint-community"
           - "eslint-*"
           - "@typescript-eslint/*"
           - "typescript-eslint"
