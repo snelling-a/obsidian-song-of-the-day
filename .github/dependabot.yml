@@ -12,6 +12,7 @@ updates:
           - "@eslint"
           - "@eslint-community"
           - "eslint-*"
+          - "@stylistic"
           - "@typescript-eslint/*"
           - "typescript-eslint"
       types:
