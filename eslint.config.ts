@@ -1,4 +1,3 @@
-// @ts-expect-error - esm module without types
 import eslintComments from "@eslint-community/eslint-plugin-eslint-comments/configs";
 import stylistic from "@stylistic/eslint-plugin";
 import vitest from "@vitest/eslint-plugin";
