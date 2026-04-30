@@ -16,7 +16,7 @@
         "@semantic-release/exec": "7.1.0",
         "@semantic-release/git": "10.0.1",
         "@semantic-release/github": "12.0.2",
-        "@stylistic/eslint-plugin": "5.7.1",
+        "@stylistic/eslint-plugin": "5.10.0",
         "@types/node": "25.6.0",
         "@vitest/coverage-v8": "4.0.18",
         "@vitest/eslint-plugin": "1.6.6",
