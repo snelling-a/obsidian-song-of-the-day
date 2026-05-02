@@ -234,7 +234,7 @@ describe(SpotifyService, () => {
           mockAuthCode,
           mockCodeVerifier,
         ),
-      ).rejects.toThrowError(
+      ).rejects.toThrow(
         "Failed to exchange authorization code: Authorization code expired",
       );
     });
@@ -257,7 +257,7 @@ describe(SpotifyService, () => {
           mockAuthCode,
           mockCodeVerifier,
         ),
-      ).rejects.toThrowError("Failed to exchange authorization code");
+      ).rejects.toThrow("Failed to exchange authorization code");
     });
   });
 
@@ -361,7 +361,7 @@ describe(SpotifyService, () => {
         "test-client-secret",
       );
 
-      await expect(failingService.getTrack("invalid-id")).rejects.toThrowError(
+      await expect(failingService.getTrack("invalid-id")).rejects.toThrow(
         "Failed to fetch track data: API error",
       );
     });
@@ -461,7 +461,7 @@ describe(SpotifyService, () => {
     it("should throw error when user is not authenticated", async () => {
       await expect(
         service.addTrackToPlaylist("playlist-id", "spotify:track:abc123"),
-      ).rejects.toThrowError("User not authenticated");
+      ).rejects.toThrow("User not authenticated");
     });
 
     it("should add track to playlist when authenticated", async () => {
@@ -489,7 +489,7 @@ describe(SpotifyService, () => {
 
       await expect(
         service.addTrackToPlaylist("invalid-playlist", "spotify:track:abc123"),
-      ).rejects.toThrowError(
+      ).rejects.toThrow(
         "Failed to add track to playlist: Playlist not found",
       );
     });
@@ -505,7 +505,7 @@ describe(SpotifyService, () => {
 
       await expect(
         service.addTrackToPlaylist("playlist-id", "spotify:track:abc123"),
-      ).rejects.toThrowError("Failed to add track to playlist: string error");
+      ).rejects.toThrow("Failed to add track to playlist: string error");
     });
 
     it("should throw error if userApi is null after token refresh", async () => {
@@ -536,7 +536,7 @@ describe(SpotifyService, () => {
 
       await expect(
         service.addTrackToPlaylist("playlist-id", "spotify:track:abc123"),
-      ).rejects.toThrowError(
+      ).rejects.toThrow(
         "Failed to initialize user API after token refresh",
       );
     });
@@ -634,7 +634,7 @@ describe(SpotifyService, () => {
 
       await expect(
         service.addTrackToPlaylist("playlist-id", "spotify:track:abc123"),
-      ).rejects.toThrowError(
+      ).rejects.toThrow(
         "Failed to refresh access token: Refresh token revoked",
       );
     });
@@ -686,7 +686,7 @@ describe(SpotifyService, () => {
 
       await expect(
         service.addTrackToPlaylist("playlist-id", "spotify:track:abc123"),
-      ).rejects.toThrowError("No refresh token available");
+      ).rejects.toThrow("No refresh token available");
     });
 
     it("should use existing refresh token when new one is not provided", async () => {
@@ -751,7 +751,7 @@ describe(SpotifyService, () => {
 
       const service = new SpotifyService(mockClientId, "test-client-secret");
 
-      await expect(service.getTrack("track-id")).rejects.toThrowError(
+      await expect(service.getTrack("track-id")).rejects.toThrow(
         "Failed to fetch track data: string error",
       );
     });

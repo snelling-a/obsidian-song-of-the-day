@@ -59,6 +59,7 @@ describe("create-song-note", () => {
     let modalCallback: ((input: string) => void) | null = null;
 
     function getCommandCallback(): CommandCallback {
+      // eslint-disable-next-line vitest/unbound-method -- testing that the command is registered with the correct callback
       const call = vi.mocked(mockPlugin.addCommand).mock.calls[0][0] as {
         callback: CommandCallback;
       };
