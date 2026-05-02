@@ -48,7 +48,7 @@ export class OAuthCallbackModal extends Modal {
           width: "100%",
         });
 
-        setTimeout(() => {
+        activeWindow.setTimeout(() => {
           component.inputEl.focus();
         }, 100);
       });
