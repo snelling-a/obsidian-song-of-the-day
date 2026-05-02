@@ -178,8 +178,9 @@ export default defineConfig([
           brands: ["Spotify"],
           ignoreRegex: [
             "Client ID",
-            "format reference",
             "Music/Song of the Day",
+            "format reference",
+            "https://open.spotify.com/track/...",
             "spotify:",
           ],
         },
