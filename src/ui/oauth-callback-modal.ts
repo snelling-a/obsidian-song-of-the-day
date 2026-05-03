@@ -44,9 +44,6 @@ export class OAuthCallbackModal extends Modal {
           .onChange((value) => {
             this.callbackUrl = value.trim();
           });
-        component.inputEl.setCssProps({
-          width: "100%",
-        });
 
         activeWindow.setTimeout(() => {
           component.inputEl.focus();
