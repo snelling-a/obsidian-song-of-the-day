@@ -180,7 +180,7 @@ export default defineConfig([
             "format reference",
             "Music/Song of the Day",
             "spotify:",
-            "https://open.spotify.com/track/...",
+            String.raw`https:\/\/open\.spotify\.com\/track\/\.\.\.`,
           ],
         },
       ],
