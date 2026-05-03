@@ -1,73 +1,73 @@
 {
-    "author": {
-        "name": "snelling-a",
-        "url": "https://github.com/snelling-a"
-    },
-    "bugs": {
-        "url": "https://github.com/snelling-a/obsidian-song-of-the-day/issues"
-    },
-    "dependencies": {
-        "@spotify/web-api-ts-sdk": "1.2.0"
-    },
-    "description": "Create song notes from Spotify links with metadata and album art.",
-    "devDependencies": {
-        "@eslint-community/eslint-plugin-eslint-comments": "^4.7.1",
-        "@eslint/js": "^10.0.1",
-        "@semantic-release/exec": "7.1.0",
-        "@semantic-release/git": "10.0.1",
-        "@semantic-release/github": "12.0.2",
-        "@stylistic/eslint-plugin": "^5.10.0",
-        "@types/node": "25.6.0",
-        "@vitest/coverage-v8": "4.1.5",
-        "@vitest/eslint-plugin": "1.6.16",
-        "esbuild": "0.27.2",
-        "eslint": "^10.3.0",
-        "eslint-plugin-jsdoc": "^62.9.0",
-        "eslint-plugin-obsidianmd": "^0.2.9",
-        "eslint-plugin-perfectionist": "5.5.0",
-        "eslint-plugin-unicorn": "^64.0.0",
-        "globals": "^17.6.0",
-        "jiti": "^2.6.1",
-        "jsdom": "28.0.0",
-        "moment": "2.30.1",
-        "obsidian": "1.12.0",
-        "obsidian-typings": "4.99.0",
-        "semantic-release": "24.2.9",
-        "semantic-release-obsidian-plugin": "github:brianrodri/semantic-release-obsidian-plugin",
-        "typescript": "5.9.3",
-        "typescript-eslint": "^8.59.1",
-        "vitest": "4.1.5"
-    },
-    "funding": {
-        "type": "github",
-        "url": "https://github.com/sponsors/snelling-a"
-    },
-    "homepage": "https://github.com/snelling-a/obsidian-song-of-the-day",
-    "keywords": [
-        "obsidian",
-        "obsidian-plugin",
-        "spotify",
-        "music"
-    ],
-    "license": "Unlicense",
-    "main": "main.js",
-    "name": "obsidian-song-of-the-day",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/snelling-a/obsidian-song-of-the-day.git"
-    },
-    "scripts": {
-        "build": "npm run check && node --env-file-if-exists=.env esbuild.config.mjs production",
-        "check": "npm run typecheck && npm run lint",
-        "dev": "node --env-file-if-exists=.env esbuild.config.mjs",
-        "lint": "eslint .",
-        "lint:fix": "eslint . --fix",
-        "test": "vitest run",
-        "test:coverage": "vitest run --coverage",
-        "test:ui": "vitest --ui",
-        "test:watch": "vitest",
-        "typecheck": "tsc --noEmit"
-    },
-    "type": "module",
-    "version": "1.2.5"
+  "author": {
+    "name": "snelling-a",
+    "url": "https://github.com/snelling-a"
+  },
+  "bugs": {
+    "url": "https://github.com/snelling-a/obsidian-song-of-the-day/issues"
+  },
+  "dependencies": {
+    "@spotify/web-api-ts-sdk": "1.2.0"
+  },
+  "description": "Create song notes from Spotify links with metadata and album art.",
+  "devDependencies": {
+    "@eslint-community/eslint-plugin-eslint-comments": "^4.7.1",
+    "@eslint/js": "^10.0.1",
+    "@semantic-release/exec": "7.1.0",
+    "@semantic-release/git": "10.0.1",
+    "@semantic-release/github": "^12.0.6",
+    "@stylistic/eslint-plugin": "^5.10.0",
+    "@types/node": "25.6.0",
+    "@vitest/coverage-v8": "4.1.5",
+    "@vitest/eslint-plugin": "1.6.16",
+    "esbuild": "0.27.2",
+    "eslint": "^10.3.0",
+    "eslint-plugin-jsdoc": "^62.9.0",
+    "eslint-plugin-obsidianmd": "^0.2.9",
+    "eslint-plugin-perfectionist": "5.5.0",
+    "eslint-plugin-unicorn": "^64.0.0",
+    "globals": "^17.6.0",
+    "jiti": "^2.6.1",
+    "jsdom": "28.0.0",
+    "moment": "2.30.1",
+    "obsidian": "1.12.0",
+    "obsidian-typings": "4.99.0",
+    "semantic-release": "^25.0.3",
+    "semantic-release-obsidian-plugin": "github:brianrodri/semantic-release-obsidian-plugin",
+    "typescript": "5.9.3",
+    "typescript-eslint": "^8.59.1",
+    "vitest": "4.1.5"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/snelling-a"
+  },
+  "homepage": "https://github.com/snelling-a/obsidian-song-of-the-day",
+  "keywords": [
+    "obsidian",
+    "obsidian-plugin",
+    "spotify",
+    "music"
+  ],
+  "license": "Unlicense",
+  "main": "main.js",
+  "name": "obsidian-song-of-the-day",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/snelling-a/obsidian-song-of-the-day.git"
+  },
+  "scripts": {
+    "build": "npm run check && node --env-file-if-exists=.env esbuild.config.mjs production",
+    "check": "npm run typecheck && npm run lint",
+    "dev": "node --env-file-if-exists=.env esbuild.config.mjs",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:ui": "vitest --ui",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit"
+  },
+  "type": "module",
+  "version": "1.2.5"
 }

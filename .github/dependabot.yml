@@ -29,20 +29,11 @@ updates:
         patterns:
           - "vitest"
           - "@vitest/*"
-      testing-library:
-        patterns:
-          - "@testing-library/*"
       build-tools:
         patterns:
           - "esbuild"
           - "rollup"
           - "vite"
-      lint-staged:
-        patterns:
-          - "lint-staged"
-      prettier:
-        patterns:
-          - "prettier"
       semantic-release:
         patterns:
           - "semantic-release"
