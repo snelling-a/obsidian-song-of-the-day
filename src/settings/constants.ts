@@ -15,11 +15,11 @@ export const NOTE_NAME_CASING = {
   SNAKE_CASE: "snake_case",
 } as const;
 
-export const SPOTIFY_API_DOCS_URL
-  = "https://developer.spotify.com/documentation/web-api/concepts/apps";
+export const SPOTIFY_API_DOCS_URL =
+  "https://developer.spotify.com/documentation/web-api/concepts/apps";
 
-export const MOMENT_FORMAT_DOCS_URL
-  = "https://momentjs.com/docs/#/displaying/format/";
+export const MOMENT_FORMAT_DOCS_URL =
+  "https://momentjs.com/docs/#/displaying/format/";
 
 /**
  * Generates default frontmatter fields from the field registry.
@@ -43,9 +43,9 @@ export const DEFAULT_SETTINGS: SongOfTheDaySettings = {
   noteTemplate: "# {{title}}\n\n",
   outputFolder: "",
   playlistId: "",
-  spotifyAccessToken: "",
-  spotifyClientId: "",
-  spotifyClientSecret: "",
-  spotifyRefreshToken: "",
+  spotifyAccessToken: "spotify-access-token",
+  spotifyClientId: "spotify-client-id",
+  spotifyClientSecret: "spotify-client-secret",
+  spotifyRefreshToken: "spotify-refresh-token",
   spotifyTokenExpiry: 0,
 };
