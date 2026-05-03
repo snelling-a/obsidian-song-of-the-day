@@ -1,3 +1,4 @@
+// eslint-disable-next-line obsidianmd/no-nodejs-modules -- this is not production code, it's only used for testing
 import path from "node:path";
 import { defineConfig } from "vitest/config";
 
