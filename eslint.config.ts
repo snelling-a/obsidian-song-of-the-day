@@ -58,9 +58,7 @@ export default defineConfig([
     files: ["**/*.{ts,?js}"],
     ...perfectionist.configs["recommended-natural"],
   },
-  // @ts-expect-error - obsidianmd config types are incompatible with eslint config types
   ...obsidianmd.configs.recommended,
-  // HACK: ObsidianReviewBot marked this as Unused eslint-disable directive
   // @ts-expect-error - esm module without types
   (eslintComments as unknown).recommended,
   {
