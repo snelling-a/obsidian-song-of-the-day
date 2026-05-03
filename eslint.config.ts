@@ -58,7 +58,6 @@ export default defineConfig([
     files: ["**/*.{ts,?js}"],
     ...perfectionist.configs["recommended-natural"],
   },
-  // @ts-expect-error - obsidianmd config types are incompatible with eslint config types
   ...obsidianmd.configs.recommended,
   // HACK: ObsidianReviewBot marked this as Unused eslint-disable directive
   // @ts-expect-error - esm module without types
@@ -181,6 +180,7 @@ export default defineConfig([
             "format reference",
             "Music/Song of the Day",
             "spotify:",
+            String.raw`https:\/\/open\.spotify\.com\/track\/\.\.\.`,
           ],
         },
       ],
@@ -261,7 +261,7 @@ export default defineConfig([
   },
   {
     files: ["vitest.config.ts"],
-    rules: { "import/no-nodejs-modules": "off" },
+    rules: { "obsidianmd/no-nodejs-modules": "off" },
   },
   {
     files: ["package.json"],

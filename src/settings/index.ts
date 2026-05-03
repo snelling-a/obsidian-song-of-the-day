@@ -1,9 +1,15 @@
 import SongOfTheDayPlugin from "main";
-import { App, Notice, PluginSettingTab, Setting } from "obsidian";
+import {
+  App,
+  Notice,
+  PluginSettingTab,
+  SecretComponent,
+  Setting,
+} from "obsidian";
 import { FIELD_REGISTRY } from "src/constants/field-registry";
 import { SpotifyService } from "src/services/spotify";
 import { clearCachedService } from "src/services/spotify/spotify-manager";
-import { CSS_CLASSES, CSS_VARIABLES } from "src/ui/css";
+import { CSS_CLASSES } from "src/ui/css";
 import { FolderSuggest } from "src/ui/folder-suggest";
 import { OAuthCallbackModal } from "src/ui/oauth-callback-modal";
 import { TemplateSuggest } from "src/ui/template-suggest";
@@ -12,6 +18,7 @@ import {
   getNoteNameCasingLabel,
   getNoteNameStructureLabel,
 } from "src/utils/format";
+import { getClientId, getClientSecret } from "src/utils/secret-storage";
 
 import {
   DEFAULT_SETTINGS,
@@ -60,24 +67,12 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   }
 
   /**
-   * Clears invalid styling from an input element.
-   * @param inputEl The input element to clear
-   */
-  private clearInputInvalid(inputEl: HTMLInputElement): void {
-    inputEl.removeClass(CSS_CLASSES.INVALID);
-    inputEl.style.removeProperty("border-color");
-  }
-
-  /**
    * Creates the API credentials help text and link.
    * Only shown when credentials are missing.
    * @param containerEl The container element to add the help text to
    */
   private createApiCredentialsHelp(containerEl: HTMLElement): void {
-    if (
-      this.plugin.settings.spotifyClientId &&
-      this.plugin.settings.spotifyClientSecret
-    ) {
+    if (getClientId(this.plugin) && getClientSecret(this.plugin)) {
       return;
     }
 
@@ -136,9 +131,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       );
 
     if (isAuthenticated) {
-      setting.descEl.setCssProps({
-        color: CSS_VARIABLES.TEXT_SUCCESS,
-      });
+      setting.descEl.addClass("song-of-the-day-setting-success");
     }
   }
 
@@ -183,9 +176,9 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
     parent: HTMLElement,
     message: string,
   ): HTMLElement {
-    const errorEl = parent.createDiv();
-    errorEl.style.color = CSS_VARIABLES.TEXT_ERROR;
-    errorEl.style.fontSize = CSS_VARIABLES.FONT_UI_SMALLER;
+    const errorEl = parent.createDiv({
+      cls: "song-of-the-day-setting-error",
+    });
     errorEl.setText(message);
 
     return errorEl;
@@ -200,20 +193,13 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       .setName("Include fields")
       .setDesc("Select which fields to include in note frontmatter");
 
-    const toggleContainer = setting.settingEl.createDiv();
-    toggleContainer.setCssProps({
-      display: "grid",
-      gap: CSS_VARIABLES.SIZE_4_2,
-      "grid-template-columns": "repeat(auto-fill, minmax(12ch, 1fr))",
-      "margin-top": CSS_VARIABLES.SIZE_4_2,
+    const toggleContainer = setting.settingEl.createDiv({
+      cls: "song-of-the-day-setting-field-grid",
     });
 
     for (const field of FIELD_REGISTRY) {
-      const fieldEl = toggleContainer.createDiv();
-      fieldEl.setCssProps({
-        "align-items": "center",
-        display: "flex",
-        gap: CSS_VARIABLES.SIZE_4_2,
+      const fieldEl = toggleContainer.createDiv({
+        cls: "song-of-the-day-setting-field-row",
       });
 
       const toggle = fieldEl.createEl("input", {
@@ -226,10 +212,8 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       });
 
       const labelEl = fieldEl.createEl("label", {
+        cls: "song-of-the-day-setting-field-label",
         text: field.label,
-      });
-      labelEl.setCssProps({
-        cursor: "pointer",
       });
       labelEl.addEventListener("click", () => {
         toggle.checked = !toggle.checked;
@@ -360,9 +344,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
             this.plugin.settings.playlistId = playlistId;
             await this.plugin.saveSettings();
           });
-        text.inputEl.setCssProps({
-          width: "100%",
-        });
+        text.inputEl.addClass("song-of-the-day-setting-wide-input");
       });
   }
 
@@ -371,54 +353,41 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    * @param containerEl The container element to add the setting to
    */
   private createSpotifyClientIdSetting(containerEl: HTMLElement): void {
+    let errorEl: HTMLElement | null = null;
     const setting = new Setting(containerEl)
       .setName("Spotify client ID")
-      .setDesc("Spotify application client ID.");
+      .setDesc("Spotify application client ID.")
+      .addComponent((el) => {
+        return new SecretComponent(this.app, el)
+          .setValue(this.plugin.settings.spotifyClientId)
+          .onChange(async (value) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- value is null if user clears the input
+            const trimmedValue = value?.trim();
+            this.plugin.settings.spotifyClientId = trimmedValue;
+            await this.plugin.saveSettings();
 
-    let errorEl: HTMLElement | null = null;
+            if (!trimmedValue) {
+              errorEl ??= this.createErrorElement(
+                setting.infoEl,
+                "Client ID is required to use this plugin",
+              );
 
-    setting.addText((component) => {
-      component
-        .setPlaceholder("Enter client ID")
-        .setValue(this.plugin.settings.spotifyClientId)
-        .onChange(async (value) => {
-          const trimmedValue = value.trim();
+              return;
+            }
 
-          this.plugin.settings.spotifyClientId = trimmedValue;
-          await this.plugin.saveSettings();
+            errorEl?.remove();
+            errorEl = null;
 
-          if (trimmedValue.length === 0) {
-            this.markInputInvalid(component.inputEl);
-            errorEl ??= this.createErrorElement(
-              setting.infoEl,
-              "Client ID is required to use this plugin",
-            );
+            this.updateCredentialsHelpEl();
+          });
+      });
 
-            return;
-          }
-
-          this.clearInputInvalid(component.inputEl);
-          errorEl?.remove();
-          errorEl = null;
-
-          if (
-            this.plugin.settings.spotifyClientId &&
-            this.plugin.settings.spotifyClientSecret &&
-            this.credentialsHelpEl
-          ) {
-            this.credentialsHelpEl.remove();
-            this.credentialsHelpEl = null;
-          }
-        });
-
-      if (!this.plugin.settings.spotifyClientId) {
-        this.markInputInvalid(component.inputEl);
-        errorEl = this.createErrorElement(
-          setting.infoEl,
-          "Client ID is required to use this plugin",
-        );
-      }
-    });
+    if (!getClientId(this.plugin)) {
+      errorEl = this.createErrorElement(
+        setting.infoEl,
+        "Client ID is required to use this plugin",
+      );
+    }
   }
 
   /**
@@ -426,56 +395,41 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    * @param containerEl The container element to add the setting to
    */
   private createSpotifyClientSecretSetting(containerEl: HTMLElement): void {
+    let errorEl: HTMLElement | null = null;
     const setting = new Setting(containerEl)
       .setName("Spotify client secret")
-      .setDesc("Spotify application client secret.");
+      .setDesc("Spotify application client secret.")
+      .addComponent((el) => {
+        return new SecretComponent(this.app, el)
+          .setValue(this.plugin.settings.spotifyClientSecret)
+          .onChange(async (value) => {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- value is null if user clears the input
+            const trimmedValue = value?.trim();
+            this.plugin.settings.spotifyClientSecret = trimmedValue;
+            await this.plugin.saveSettings();
 
-    let errorEl: HTMLElement | null = null;
+            if (!trimmedValue) {
+              errorEl ??= this.createErrorElement(
+                setting.infoEl,
+                "Client Secret is required to use this plugin",
+              );
 
-    setting.addText((text) => {
-      text
-        .setPlaceholder("Enter client secret")
-        .setValue(this.plugin.settings.spotifyClientSecret)
-        .onChange(async (value) => {
-          const trimmedValue = value.trim();
+              return;
+            }
 
-          this.plugin.settings.spotifyClientSecret = trimmedValue;
-          await this.plugin.saveSettings();
+            errorEl?.remove();
+            errorEl = null;
 
-          if (trimmedValue.length === 0) {
-            this.markInputInvalid(text.inputEl);
-            errorEl ??= this.createErrorElement(
-              setting.infoEl,
-              "Client Secret is required to use this plugin",
-            );
+            this.updateCredentialsHelpEl();
+          });
+      });
 
-            return;
-          }
-
-          this.clearInputInvalid(text.inputEl);
-          errorEl?.remove();
-          errorEl = null;
-
-          if (
-            this.plugin.settings.spotifyClientId &&
-            this.plugin.settings.spotifyClientSecret &&
-            this.credentialsHelpEl
-          ) {
-            this.credentialsHelpEl.remove();
-            this.credentialsHelpEl = null;
-          }
-        });
-
-      text.inputEl.type = "password";
-
-      if (!this.plugin.settings.spotifyClientSecret) {
-        this.markInputInvalid(text.inputEl);
-        errorEl = this.createErrorElement(
-          setting.infoEl,
-          "Client Secret is required to use this plugin",
-        );
-      }
-    });
+    if (!getClientSecret(this.plugin)) {
+      errorEl = this.createErrorElement(
+        setting.infoEl,
+        "Client Secret is required to use this plugin",
+      );
+    }
   }
 
   /**
@@ -566,11 +520,16 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
   }
 
   /**
-   * Marks an input as invalid with error styling.
-   * @param inputEl The input element to mark as invalid
+   * Updates the credentials help element visibility.
    */
-  private markInputInvalid(inputEl: HTMLInputElement): void {
-    inputEl.addClass(CSS_CLASSES.INVALID);
-    inputEl.style.borderColor = CSS_VARIABLES.BACKGROUND_MODIFIER_ERROR;
+  private updateCredentialsHelpEl(): void {
+    if (
+      getClientId(this.plugin) &&
+      getClientSecret(this.plugin) &&
+      this.credentialsHelpEl
+    ) {
+      this.credentialsHelpEl.remove();
+      this.credentialsHelpEl = null;
+    }
   }
 }

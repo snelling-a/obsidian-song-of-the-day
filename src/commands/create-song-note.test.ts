@@ -1,5 +1,3 @@
-import type { App } from "obsidian";
-
 import SongOfTheDayPlugin from "main";
 import { Notice } from "obsidian";
 import { createMockApp } from "test/fixtures/app";
@@ -59,6 +57,7 @@ describe("create-song-note", () => {
     let modalCallback: ((input: string) => void) | null = null;
 
     function getCommandCallback(): CommandCallback {
+      // eslint-disable-next-line vitest/unbound-method -- testing that the command is registered with the correct callback
       const call = vi.mocked(mockPlugin.addCommand).mock.calls[0][0] as {
         callback: CommandCallback;
       };
@@ -174,7 +173,7 @@ describe("create-song-note", () => {
       const mockApp = createMockApp({ existingFile });
       mockApp.workspace.getLeaf.mockReturnValue({
         openFile: mockOpenFile,
-      } as unknown as ReturnType<App["workspace"]["getLeaf"]>);
+      });
       mockPlugin.app = mockApp as unknown as typeof mockPlugin.app;
 
       triggerCommand();

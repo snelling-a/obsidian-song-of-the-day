@@ -1,8 +1,44 @@
-/*
+.song-of-the-day-setting-success {
+  color: var(--text-success);
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.song-of-the-day-setting-error {
+  color: var(--text-error);
+  font-size: var(--font-ui-smaller);
+}
 
-If your plugin does not need CSS, delete this file.
+.song-of-the-day-setting-field-grid {
+  display: grid;
+  gap: var(--size-4-2);
+  grid-template-columns: repeat(auto-fill, minmax(12ch, 1fr));
+  margin-top: var(--size-4-2);
+}
 
-*/
+.song-of-the-day-setting-field-row {
+  align-items: center;
+  display: flex;
+  gap: var(--size-4-2);
+}
+
+.song-of-the-day-setting-field-label {
+  cursor: pointer;
+}
+
+.song-of-the-day-setting-template-vars {
+  margin-top: var(--size-4-2);
+}
+
+.song-of-the-day-setting-template-var-row {
+  align-items: baseline;
+  display: flex;
+  gap: var(--size-4-2);
+}
+
+.song-of-the-day-setting-template-var-code {
+  display: inline-block;
+  min-width: 130px;
+}
+
+.song-of-the-day-setting-wide-input {
+  width: 100%;
+}

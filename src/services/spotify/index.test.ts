@@ -16,7 +16,9 @@ describe(SpotifyService, () => {
   beforeEach(() => {
     vi.spyOn(SpotifyApi, "withAccessToken").mockReturnValue({
       playlists: {
-        addItemsToPlaylist: vi.fn<() => Promise<void>>().mockResolvedValue(undefined),
+        addItemsToPlaylist: vi
+          .fn<() => Promise<void>>()
+          .mockResolvedValue(undefined),
       },
       tracks: {
         get: vi.fn<() => Promise<object>>().mockResolvedValue({}),
@@ -330,7 +332,9 @@ describe(SpotifyService, () => {
     beforeEach(() => {
       vi.mocked(SpotifyApi.withClientCredentials).mockReturnValue({
         tracks: {
-          get: vi.fn<() => Promise<typeof mockSpotifyTrack>>().mockResolvedValue(mockSpotifyTrack),
+          get: vi
+            .fn<() => Promise<typeof mockSpotifyTrack>>()
+            .mockResolvedValue(mockSpotifyTrack),
         },
       } as unknown as ReturnType<typeof SpotifyApi.withClientCredentials>);
 
@@ -346,7 +350,9 @@ describe(SpotifyService, () => {
     it("should throw error when API request fails", async () => {
       vi.mocked(SpotifyApi.withClientCredentials).mockReturnValue({
         tracks: {
-          get: vi.fn<() => Promise<never>>().mockRejectedValue(new Error("API error")),
+          get: vi
+            .fn<() => Promise<never>>()
+            .mockRejectedValue(new Error("API error")),
         },
       } as unknown as ReturnType<typeof SpotifyApi.withClientCredentials>);
 
@@ -438,7 +444,9 @@ describe(SpotifyService, () => {
 
   describe("addTrackToPlaylist", () => {
     let service: SpotifyService;
-    const mockAddItems = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+    const mockAddItems = vi
+      .fn<() => Promise<void>>()
+      .mockResolvedValue(undefined);
 
     beforeEach(() => {
       vi.mocked(SpotifyApi.withAccessToken).mockReturnValue({
@@ -481,7 +489,9 @@ describe(SpotifyService, () => {
 
       await expect(
         service.addTrackToPlaylist("invalid-playlist", "spotify:track:abc123"),
-      ).rejects.toThrow("Failed to add track to playlist: Playlist not found");
+      ).rejects.toThrow(
+        "Failed to add track to playlist: Playlist not found",
+      );
     });
 
     it("should handle non-Error API failure", async () => {
@@ -526,13 +536,17 @@ describe(SpotifyService, () => {
 
       await expect(
         service.addTrackToPlaylist("playlist-id", "spotify:track:abc123"),
-      ).rejects.toThrow("Failed to initialize user API after token refresh");
+      ).rejects.toThrow(
+        "Failed to initialize user API after token refresh",
+      );
     });
   });
 
   describe("token refresh", () => {
     let service: SpotifyService;
-    const mockAddItems = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+    const mockAddItems = vi
+      .fn<() => Promise<void>>()
+      .mockResolvedValue(undefined);
 
     beforeEach(() => {
       vi.mocked(SpotifyApi.withAccessToken).mockReturnValue({
@@ -577,7 +591,9 @@ describe(SpotifyService, () => {
     });
 
     it("should call token refresh callback when provided", async () => {
-      const onTokenRefresh = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+      const onTokenRefresh = vi
+        .fn<() => Promise<void>>()
+        .mockResolvedValue(undefined);
       const expiredTimestamp = Date.now() - 1000;
 
       service.initializeUserApi(
@@ -686,7 +702,9 @@ describe(SpotifyService, () => {
         text: "",
       });
 
-      const onTokenRefresh = vi.fn<() => Promise<void>>().mockResolvedValue(undefined);
+      const onTokenRefresh = vi
+        .fn<() => Promise<void>>()
+        .mockResolvedValue(undefined);
       const expiredTimestamp = Date.now() - 1000;
 
       service.initializeUserApi(
