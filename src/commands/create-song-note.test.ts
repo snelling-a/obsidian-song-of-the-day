@@ -1,5 +1,3 @@
-import type { App } from "obsidian";
-
 import SongOfTheDayPlugin from "main";
 import { Notice } from "obsidian";
 import { createMockApp } from "test/fixtures/app";
@@ -175,7 +173,7 @@ describe("create-song-note", () => {
       const mockApp = createMockApp({ existingFile });
       mockApp.workspace.getLeaf.mockReturnValue({
         openFile: mockOpenFile,
-      } as unknown as ReturnType<App["workspace"]["getLeaf"]>);
+      });
       mockPlugin.app = mockApp as unknown as typeof mockPlugin.app;
 
       triggerCommand();

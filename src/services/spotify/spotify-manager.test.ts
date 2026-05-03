@@ -49,7 +49,7 @@ describe("spotify-manager", () => {
       ).initializeUserApi = mockInitializeUserApi;
 
       return this;
-    } as unknown as typeof SpotifyService);
+    });
   });
 
   afterEach(() => {

@@ -52,7 +52,7 @@ export class SpotifyInputModal extends Modal {
             this.submit();
           }
         });
-        setTimeout(() => {
+        activeWindow.setTimeout(() => {
           text.inputEl.focus();
         }, 10);
       });
@@ -104,8 +104,8 @@ export class SpotifyInputModal extends Modal {
       this.onSubmit(this.result.trim());
       this.close();
     } catch (error) {
-      const message
-        = error instanceof Error ? error.message : "An error occurred";
+      const message =
+        error instanceof Error ? error.message : "An error occurred";
       this.showError(message);
       console.error("Error in onSubmit:", error);
     }
