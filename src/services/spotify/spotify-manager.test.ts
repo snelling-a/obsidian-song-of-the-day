@@ -1,4 +1,3 @@
-import { createMockApp } from "test/fixtures/app";
 import { createMockPlugin } from "test/fixtures/plugin";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -60,8 +59,18 @@ describe("spotify-manager", () => {
   describe(clearCachedService, () => {
     it("should clear the cached service", () => {
       const plugin = createMockPlugin({
-        spotifyClientId: "test-client-id",
-        spotifyClientSecret: "test-client-secret",
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
       });
 
       const service1 = getOrCreateSpotifyService(plugin);
@@ -81,9 +90,7 @@ describe("spotify-manager", () => {
     it("should return null when client ID is missing", () => {
       const plugin = createMockPlugin({
         spotifyClientId: "",
-        spotifyClientSecret: "test-secret",
       });
-      plugin.app = createMockApp() as unknown as typeof plugin.app;
 
       const result = getOrCreateSpotifyService(plugin);
 
@@ -92,10 +99,8 @@ describe("spotify-manager", () => {
 
     it("should return null when client secret is missing", () => {
       const plugin = createMockPlugin({
-        spotifyClientId: "test-id",
         spotifyClientSecret: "",
       });
-      plugin.app = createMockApp() as unknown as typeof plugin.app;
 
       const result = getOrCreateSpotifyService(plugin);
 
@@ -107,21 +112,27 @@ describe("spotify-manager", () => {
         spotifyClientId: "",
         spotifyClientSecret: "",
       });
-      const mockApp = createMockApp();
-      plugin.app = mockApp as unknown as typeof plugin.app;
 
       getOrCreateSpotifyService(plugin);
 
-      expect(mockApp.setting.open).toHaveBeenCalledWith();
-      expect(mockApp.setting.openTabById).toHaveBeenCalledWith(
-        "obsidian-song-of-the-day",
-      );
+      expect(plugin.app.secretStorage.getSecret).toHaveBeenCalledWith("");
+      expect(plugin.app.secretStorage.getSecret).toHaveBeenCalledTimes(2);
     });
 
     it("should create a new SpotifyService when credentials are valid", () => {
       const plugin = createMockPlugin({
-        spotifyClientId: "test-client-id",
-        spotifyClientSecret: "test-client-secret",
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
       });
 
       const result = getOrCreateSpotifyService(plugin);
@@ -135,8 +146,18 @@ describe("spotify-manager", () => {
 
     it("should return cached service on subsequent calls with same credentials", () => {
       const plugin = createMockPlugin({
-        spotifyClientId: "test-client-id",
-        spotifyClientSecret: "test-client-secret",
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
       });
 
       const service1 = getOrCreateSpotifyService(plugin);
@@ -148,14 +169,35 @@ describe("spotify-manager", () => {
 
     it("should create new service when credentials change", () => {
       const plugin = createMockPlugin({
-        spotifyClientId: "test-client-id-1",
-        spotifyClientSecret: "test-client-secret-1",
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
       });
 
       getOrCreateSpotifyService(plugin);
 
-      plugin.settings.spotifyClientId = "test-client-id-2";
-      plugin.settings.spotifyClientSecret = "test-client-secret-2";
+      // Update the mock secret storage to return new credentials
+      vi.spyOn(plugin.app.secretStorage, "getSecret").mockImplementation(
+        (key: string) => {
+          if (key === "spotify-client-id") {
+            return "test-client-id-2";
+          }
+          if (key === "spotify-client-secret") {
+            return "test-client-secret-2";
+          }
+
+          return null;
+        },
+      );
 
       getOrCreateSpotifyService(plugin);
 
@@ -168,9 +210,19 @@ describe("spotify-manager", () => {
 
     it("should initialize user API when OAuth tokens are present", () => {
       const plugin = createMockPlugin({
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
         spotifyAccessToken: "test-access-token",
-        spotifyClientId: "test-client-id",
-        spotifyClientSecret: "test-client-secret",
         spotifyRefreshToken: "test-refresh-token",
         spotifyTokenExpiry: Date.now() + 3_600_000,
       });
@@ -187,8 +239,18 @@ describe("spotify-manager", () => {
 
     it("should not initialize user API when OAuth tokens are missing", () => {
       const plugin = createMockPlugin({
-        spotifyClientId: "test-client-id",
-        spotifyClientSecret: "test-client-secret",
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
       });
 
       getOrCreateSpotifyService(plugin);
@@ -199,9 +261,19 @@ describe("spotify-manager", () => {
     it("should update plugin settings when tokens are refreshed", async () => {
       setupTokenCallbackCapture();
       const plugin = createMockPlugin({
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
         spotifyAccessToken: "old-access-token",
-        spotifyClientId: "test-client-id",
-        spotifyClientSecret: "test-client-secret",
         spotifyRefreshToken: "old-refresh-token",
         spotifyTokenExpiry: Date.now() + 3_600_000,
       });
@@ -224,9 +296,19 @@ describe("spotify-manager", () => {
     it("should show notice when saving tokens fails", async () => {
       setupTokenCallbackCapture();
       const plugin = createMockPlugin({
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
         spotifyAccessToken: "old-access-token",
-        spotifyClientId: "test-client-id",
-        spotifyClientSecret: "test-client-secret",
         spotifyRefreshToken: "old-refresh-token",
         spotifyTokenExpiry: Date.now() + 3_600_000,
       });
@@ -257,9 +339,19 @@ describe("spotify-manager", () => {
     it("should handle non-Error rejection when saving tokens fails", async () => {
       setupTokenCallbackCapture();
       const plugin = createMockPlugin({
+        secretStorage: {
+          getSecret: (key: string) => {
+            if (key === "spotify-client-id") {
+              return "test-client-id";
+            }
+            if (key === "spotify-client-secret") {
+              return "test-client-secret";
+            }
+
+            return null;
+          },
+        },
         spotifyAccessToken: "old-access-token",
-        spotifyClientId: "test-client-id",
-        spotifyClientSecret: "test-client-secret",
         spotifyRefreshToken: "old-refresh-token",
         spotifyTokenExpiry: Date.now() + 3_600_000,
       });

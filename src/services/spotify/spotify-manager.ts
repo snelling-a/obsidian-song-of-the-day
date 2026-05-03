@@ -1,6 +1,7 @@
 import type SongOfTheDayPlugin from "main";
 
 import { Notice } from "obsidian";
+import { getClientId, getClientSecret } from "src/utils/secret-storage";
 
 import pkg from "../../../package.json";
 import { SpotifyService } from "../spotify";
@@ -33,10 +34,10 @@ export function clearCachedService(): void {
 export function getOrCreateSpotifyService(
   plugin: SongOfTheDayPlugin,
 ): null | SpotifyService {
-  if (
-    !plugin.settings.spotifyClientId ||
-    !plugin.settings.spotifyClientSecret
-  ) {
+  const clientId = getClientId(plugin);
+  const clientSecret = getClientSecret(plugin);
+
+  if (!clientId || !clientSecret) {
     new Notice("Configure Spotify API credentials in settings");
     plugin.app.setting.open();
     plugin.app.setting.openTabById(pkg.name);
@@ -46,21 +47,18 @@ export function getOrCreateSpotifyService(
 
   if (
     cachedService &&
-    storedCredentials?.clientId === plugin.settings.spotifyClientId &&
-    storedCredentials.clientSecret === plugin.settings.spotifyClientSecret
+    storedCredentials?.clientId === clientId &&
+    storedCredentials.clientSecret === clientSecret
   ) {
     return cachedService;
   }
 
   storedCredentials = {
-    clientId: plugin.settings.spotifyClientId,
-    clientSecret: plugin.settings.spotifyClientSecret,
+    clientId,
+    clientSecret,
   };
 
-  const service = new SpotifyService(
-    plugin.settings.spotifyClientId,
-    plugin.settings.spotifyClientSecret,
-  );
+  const service = new SpotifyService(clientId, clientSecret);
 
   if (
     plugin.settings.spotifyAccessToken &&

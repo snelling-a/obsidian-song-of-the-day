@@ -18,6 +18,7 @@ import {
   getNoteNameCasingLabel,
   getNoteNameStructureLabel,
 } from "src/utils/format";
+import { getClientId, getClientSecret } from "src/utils/secret-storage";
 
 import {
   DEFAULT_SETTINGS,
@@ -71,10 +72,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    * @param containerEl The container element to add the help text to
    */
   private createApiCredentialsHelp(containerEl: HTMLElement): void {
-    if (
-      this.plugin.settings.spotifyClientId &&
-      this.plugin.settings.spotifyClientSecret
-    ) {
+    if (getClientId(this.plugin) && getClientSecret(this.plugin)) {
       return;
     }
 
@@ -376,16 +374,12 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
         return new SecretComponent(this.app, el)
           .setValue(this.plugin.settings.spotifyClientId)
           .onChange(async (value) => {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- value may null
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- value is null if user clears the input
             const trimmedValue = value?.trim();
             this.plugin.settings.spotifyClientId = trimmedValue;
             await this.plugin.saveSettings();
 
-            if (
-              !this.app.secretStorage.getSecret(
-                this.plugin.settings.spotifyClientId,
-              )
-            ) {
+            if (!trimmedValue) {
               errorEl ??= this.createErrorElement(
                 setting.infoEl,
                 "Client ID is required to use this plugin",
@@ -401,9 +395,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
           });
       });
 
-    if (
-      !this.app.secretStorage.getSecret(this.plugin.settings.spotifyClientId)
-    ) {
+    if (!getClientId(this.plugin)) {
       errorEl = this.createErrorElement(
         setting.infoEl,
         "Client ID is required to use this plugin",
@@ -416,6 +408,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    * @param containerEl The container element to add the setting to
    */
   private createSpotifyClientSecretSetting(containerEl: HTMLElement): void {
+    let errorEl: HTMLElement | null = null;
     const setting = new Setting(containerEl)
       .setName("Spotify client secret")
       .setDesc("Spotify application client secret.")
@@ -423,16 +416,12 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
         return new SecretComponent(this.app, el)
           .setValue(this.plugin.settings.spotifyClientSecret)
           .onChange(async (value) => {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- value may be null
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- value is null if user clears the input
             const trimmedValue = value?.trim();
             this.plugin.settings.spotifyClientSecret = trimmedValue;
             await this.plugin.saveSettings();
 
-            if (
-              !this.app.secretStorage.getSecret(
-                this.plugin.settings.spotifyClientSecret,
-              )
-            ) {
+            if (!trimmedValue) {
               errorEl ??= this.createErrorElement(
                 setting.infoEl,
                 "Client Secret is required to use this plugin",
@@ -448,7 +437,12 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
           });
       });
 
-    let errorEl: HTMLElement | null = null;
+    if (!getClientSecret(this.plugin)) {
+      errorEl = this.createErrorElement(
+        setting.infoEl,
+        "Client Secret is required to use this plugin",
+      );
+    }
   }
 
   /**

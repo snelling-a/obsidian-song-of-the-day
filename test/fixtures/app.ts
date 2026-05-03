@@ -10,6 +10,10 @@ export interface MockApp {
   fileManager: {
     processFrontMatter: ReturnType<typeof vi.fn>;
   };
+  secretStorage: {
+    getSecret: ReturnType<typeof vi.fn>;
+    setSecret: ReturnType<typeof vi.fn>;
+  };
   setting: {
     open: ReturnType<typeof vi.fn>;
     openTabById: ReturnType<typeof vi.fn>;
@@ -60,6 +64,10 @@ export function createMockApp(options: MockAppOptions = {}): MockApp {
   return {
     fileManager: {
       processFrontMatter: vi.fn().mockResolvedValue(undefined),
+    },
+    secretStorage: {
+      getSecret: vi.fn<(key: string) => string | null>().mockReturnValue(null),
+      setSecret: vi.fn<(key: string, value: string) => void>().mockImplementation(() => undefined),
     },
     setting: {
       open: vi.fn<() => void>(),
