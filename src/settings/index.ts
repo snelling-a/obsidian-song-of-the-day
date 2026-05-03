@@ -537,8 +537,8 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
    */
   private updateCredentialsHelpEl(): void {
     if (
-      this.plugin.settings.spotifyClientId &&
-      this.plugin.settings.spotifyClientSecret &&
+      getClientId(this.plugin) &&
+      getClientSecret(this.plugin) &&
       this.credentialsHelpEl
     ) {
       this.credentialsHelpEl.remove();
