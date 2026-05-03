@@ -8,20 +8,37 @@
     "inlineSourceMap": true,
     "inlineSources": true,
     "isolatedModules": true,
-    "lib": ["DOM", "ESNext"],
+    "lib": [
+      "DOM",
+      "ESNext"
+    ],
     "module": "ESNext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "noImplicitAny": true,
     "paths": {
-      "src/*": ["src/*"],
-      "test/*": ["test/*"]
+      "src/*": [
+        "src/*"
+      ],
+      "test/*": [
+        "test/*"
+      ]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true,
     "target": "ESNext",
-    "types": ["obsidian-typings"]
+    "types": [
+      "obsidian-typings"
+    ]
   },
-  "exclude": ["node_modules", "dist", "test/__mocks__"],
-  "include": ["**/*.ts", "eslint.config.ts"]
+  "exclude": [
+    "node_modules",
+    "dist",
+    "test/__mocks__"
+  ],
+  "include": [
+    "**/*.ts",
+    "eslint.config.ts",
+    "stylelint.config.ts"
+  ]
 }

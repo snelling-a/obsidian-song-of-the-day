@@ -9,7 +9,7 @@ import {
 import { FIELD_REGISTRY } from "src/constants/field-registry";
 import { SpotifyService } from "src/services/spotify";
 import { clearCachedService } from "src/services/spotify/spotify-manager";
-import { CSS_CLASSES, CSS_VARIABLES } from "src/ui/css";
+import { CSS_CLASSES } from "src/ui/css";
 import { FolderSuggest } from "src/ui/folder-suggest";
 import { OAuthCallbackModal } from "src/ui/oauth-callback-modal";
 import { TemplateSuggest } from "src/ui/template-suggest";
@@ -131,9 +131,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       );
 
     if (isAuthenticated) {
-      setting.descEl.setCssProps({
-        color: CSS_VARIABLES.TEXT_SUCCESS,
-      });
+      setting.descEl.addClass("song-of-the-day-authenticated");
     }
   }
 
@@ -179,8 +177,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
     message: string,
   ): HTMLElement {
     const errorEl = parent.createDiv();
-    errorEl.style.color = CSS_VARIABLES.TEXT_ERROR;
-    errorEl.style.fontSize = CSS_VARIABLES.FONT_UI_SMALLER;
+    errorEl.addClass("song-of-the-day-error");
     errorEl.setText(message);
 
     return errorEl;
@@ -196,20 +193,11 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       .setDesc("Select which fields to include in note frontmatter");
 
     const toggleContainer = setting.settingEl.createDiv();
-    toggleContainer.setCssProps({
-      display: "grid",
-      gap: CSS_VARIABLES.SIZE_4_2,
-      "grid-template-columns": "repeat(auto-fill, minmax(12ch, 1fr))",
-      "margin-top": CSS_VARIABLES.SIZE_4_2,
-    });
+    toggleContainer.addClass("song-of-the-day-toggle-container");
 
     for (const field of FIELD_REGISTRY) {
       const fieldEl = toggleContainer.createDiv();
-      fieldEl.setCssProps({
-        "align-items": "center",
-        display: "flex",
-        gap: CSS_VARIABLES.SIZE_4_2,
-      });
+      fieldEl.addClass("song-of-the-day-field");
 
       const toggle = fieldEl.createEl("input", {
         type: "checkbox",
@@ -223,9 +211,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
       const labelEl = fieldEl.createEl("label", {
         text: field.label,
       });
-      labelEl.setCssProps({
-        cursor: "pointer",
-      });
+      labelEl.addClass("song-of-the-day-label");
       labelEl.addEventListener("click", () => {
         toggle.checked = !toggle.checked;
         toggle.dispatchEvent(new Event("change"));
@@ -355,9 +341,7 @@ export class SongOfTheDaySettingTab extends PluginSettingTab {
             this.plugin.settings.playlistId = playlistId;
             await this.plugin.saveSettings();
           });
-        text.inputEl.setCssProps({
-          width: "100%",
-        });
+        text.inputEl.addClass("song-of-the-day-playlist-input");
       });
   }
 
